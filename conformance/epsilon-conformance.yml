@@ -1,0 +1,176 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  Derived from openapi/*.json (securitySchemes, response media types, parameter
+  shapes) and live probes of https://eu-ads.rmn.dotomi.com, enriched from
+  https://developers.citrusad.com/integration/reference/oauth-20-authentication,
+  /digital-services-act, /epsilon-api-terms-of-use and /acceptable-use-policy.
+description: >-
+  What the Epsilon Retail Media APIs do and do not conform to, with evidence for
+  each claim. The pattern is a platform that adopts standards on its newest
+  surface (RFC 9457 on /ads/v3) while its largest surface (v1) predates them, and
+  that publishes a regulatory-compliance document (EU Digital Services Act
+  transparency) without publishing any security certification or trust centre.
+
+standards:
+  - id: oauth2
+    conforms: true
+    partial: true
+    evidence: >-
+      OAuth 2.0 client-credentials grant documented at
+      https://developers.citrusad.com/integration/reference/oauth-20-authentication —
+      POST /v1/oauth2/token, Basic client_id:client_secret, grant_type=client_credentials,
+      Bearer token with expires_in 3600, RFC 6749 §5.2 error codes
+      (invalid_client, invalid_request). Partial because it is restricted to the
+      /ads endpoints only and is not declared as an oauth2 securityScheme in any
+      published OpenAPI.
+
+  - id: oauth2-discovery
+    conforms: false
+    evidence: >-
+      /.well-known/oauth-authorization-server returns 404 on developers.citrusad.com
+      and is not served on any Epsilon host. The token endpoint is documented as a
+      template only.
+
+  - id: oidc
+    conforms: false
+    evidence: /.well-known/openid-configuration returns 404 on every probed Epsilon host.
+
+  - id: http-basic-auth
+    conforms: true
+    evidence: >-
+      'Authorization: Basic base64(<apiKey>:)' documented as the default credential
+      for the Integration and Brand Pages APIs.
+    caveat: >-
+      The platform also accepts the raw API key in the Authorization header without
+      base64 encoding ("Authorization: Basic <existing_api_key>") for backwards
+      compatibility, which is not RFC 7617 conformant.
+
+  - id: jwt-bearer
+    conforms: true
+    evidence: >-
+      Filter Mapping and Cross-Sell Category OpenAPIs declare TokenSecurity as a
+      JWT in the Authorization header ("Bearer xxx.yyy.zzz").
+
+  - id: rfc9457
+    conforms: true
+    partial: true
+    evidence: >-
+      PROBED 2026-08-12 — POST https://eu-ads.rmn.dotomi.com/ads/v3/brand-pages
+      returned 401 with content-type application/problem+json and a body carrying
+      title, status, detail and instance.
+    caveat: >-
+      Brand Pages (/ads/v3) only. The v1 Integration API returns text/plain bare
+      strings and the filter-mapping/cross-sell APIs return {"message": string}.
+      The platform is not uniformly RFC 9457.
+
+  - id: openapi
+    conforms: true
+    version: 3.1.0
+    evidence: >-
+      The developer hub publishes OpenAPI 3.1.0 for the Integration API, the
+      Filter Mapping API and the Cross-Sell Category API — 22 operations total.
+    caveat: >-
+      The specs are exposed one operation at a time inside the reference pages
+      rather than as a single downloadable document, and the Brand Pages API has
+      no OpenAPI at all.
+
+  - id: pagination
+    conforms: true
+    style: offset (limit/skip) plus an opaque memoryToken continuation on ad generation
+    evidence: >-
+      limit and skip query parameters on every list operation across all three
+      specs; memoryToken documented at
+      https://developers.citrusad.com/integration/reference/pagination
+
+  - id: idempotency
+    conforms: false
+    evidence: >-
+      No Idempotency-Key header, parameter, retention window or conflict
+      behaviour is documented or declared in any spec. POST /orders — the
+      operation that drives attribution and billing — has no replay protection.
+
+  - id: rfc8594-sunset
+    conforms: false
+    evidence: No Sunset or Deprecation header, and no deprecation policy page, anywhere in the developer hub.
+
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: >-
+      /.well-known/security.txt 302s to / on developers.citrusad.com and 404s on
+      www.epsilon.com. No RFC 9116 policy is served on any Epsilon host.
+
+  - id: rfc9727-api-catalog
+    conforms: true
+    evidence: >-
+      https://developers.citrusad.com/.well-known/api-catalog returns 200
+      application/linkset+json with an anchor, a service-desc and a service-doc
+      link. Saved verbatim to well-known/epsilon-developers-citrusad-api-catalog.json.
+
+  - id: llms-txt
+    conforms: true
+    evidence: >-
+      https://developers.citrusad.com/integration/llms.txt returns 200 text/plain
+      with 121 indexed pages, and every documentation page is additionally served
+      as clean markdown at its .md suffix. Saved to llms/epsilon-llms.txt.
+
+  - id: rate-limit-headers
+    conforms: false
+    evidence: >-
+      429 is declared on 13 operations but no RateLimit-*, X-RateLimit-* or
+      Retry-After header is documented, and none was observed on live probes.
+
+  - id: asyncapi
+    conforms: false
+    applicable: false
+    evidence: >-
+      No event, streaming or webhook surface exists. Ad interaction reporting is
+      caller-initiated (tracking pixels and server-to-server beacons fired by the
+      retailer), so there is nothing for the provider to describe with AsyncAPI.
+
+  - id: eu-digital-services-act
+    conforms: true
+    evidence: >-
+      https://developers.citrusad.com/integration/reference/digital-services-act
+      documents DSA advertising-transparency support across product ads, banner
+      and Banner X: advertiser legal-entity identity and ad-financer identity are
+      surfaced in the ad response when the retailer sends the DSA request
+      attribute, and the Company name / Ad financer fields are captured per team.
+    scope: EU retailers using the Epsilon Onsite Retail Media platform.
+
+  - id: gdpr
+    conforms: unknown
+    evidence: >-
+      Epsilon publishes global privacy policies at
+      https://legal.epsilon.com/global-privacy-policies and the developer hub
+      publishes an Acceptable Use Policy governing customer-data sync, but no
+      API-level data-processing or GDPR conformance statement is published in the
+      developer documentation.
+
+  - id: soc2
+    conforms: unknown
+    evidence: >-
+      No trust centre, certification page or audit-report listing is published on
+      epsilon.com, legal.epsilon.com or the developer hub. trust.epsilon.com does
+      not resolve. Epsilon's published client legal terms reference supplying a
+      summary of independent audit reports against accepted frameworks on request,
+      which is a contractual commitment rather than a published certification.
+
+  - id: iso27001
+    conforms: unknown
+    evidence: Same as soc2 — nothing published publicly.
+
+  - id: pci-dss
+    conforms: false
+    applicable: false
+    evidence: No payment card data is handled by these APIs.
+
+compliance_summary:
+  published_regulatory_documents:
+    - {name: EU Digital Services Act transparency support, url: 'https://developers.citrusad.com/integration/reference/digital-services-act'}
+    - {name: Epsilon API Terms of Use, url: 'https://developers.citrusad.com/integration/reference/epsilon-api-terms-of-use'}
+    - {name: Acceptable Use Policy, url: 'https://developers.citrusad.com/integration/reference/acceptable-use-policy'}
+    - {name: Epsilon global privacy policies, url: 'https://legal.epsilon.com/global-privacy-policies'}
+  published_certifications: []
+  trust_center: false
+  vulnerability_disclosure_program: false

@@ -1,0 +1,176 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://developers.citrusad.com/integration/reference/api-overview,
+  /pagination, /oauth-20-authentication, /http-persistence-ad-caching-endpoints-1,
+  /timeouts-and-graceful-fallback-behaviour, /brand-page-apis — plus derivation
+  from openapi/*.json and live probes of https://eu-ads.rmn.dotomi.com.
+description: >-
+  Cross-cutting request/response semantics for the Epsilon Retail Media APIs —
+  the behaviours that apply across every operation rather than to any single one.
+  The headline finding is that this platform carries three generations of
+  contract side by side (v1 ads, v2 catalog, v3 brand-pages) and they do NOT
+  share conventions: the error envelope, the versioning position and the
+  auth-failure shape all differ between them.
+
+api_style: REST over HTTPS, JSON request and response bodies
+base_urls:
+  integration_data_sync: https://integration-{tenant}.citrusad.com/v1
+  ad_serving_regional: https://{region}-ads.rmn.dotomi.com
+  tracking_regional: https://{region}-tracking.rmn.dotomi.com
+  cross_sell_catalog: https://catalog.citrusad.com
+  note: >-
+    Every documented base URL is a template. Epsilon assigns the region segment
+    and the tenant host at onboarding. Verified live regional hosts at probe time:
+    eu-ads, eu-tracking, us-east-ads, apac-ads (all under rmn.dotomi.com). The
+    catalog.citrusad.com and integration-*.citrusad.com hosts named in the
+    published OpenAPI servers[] do not resolve on the public internet.
+
+authentication:
+  scheme: HTTP Basic API key; OAuth 2.0 client-credentials Bearer on /ads only; JWT Bearer on filter-mapping and cross-sell-category
+  header: Authorization
+  detail: authentication/epsilon-authentication.yml
+  docs: https://developers.citrusad.com/integration/reference/oauth-20-authentication
+
+idempotency:
+  supported: false
+  mechanism: null
+  evidence: >-
+    No Idempotency-Key (or equivalent) header, parameter or retention policy
+    appears anywhere in the published documentation or in the three published
+    OpenAPI documents. The write operations that most need it — POST /orders
+    (order reporting for attribution and billing) and POST /catalog-products —
+    are documented as create-or-update upserts keyed on caller-supplied
+    identifiers (orderId, gtin, customerId), which gives natural-key idempotence
+    for the sync endpoints but no replay protection or conflict detection for
+    /orders.
+  note: >-
+    Deliberately recorded as false. No Idempotency pointer is emitted in apis.yml
+    because the provider does not support it.
+
+pagination:
+  styles:
+    - name: offset
+      applies_to:
+        - GET /orders
+        - GET /catalog-products
+        - GET /customers
+        - GET /filter-mapping
+        - GET /v2/cross-sell-categories
+      request_params:
+        limit: Maximum records to return
+        skip: Number of records to skip
+      note: Classic limit/skip offset paging on every list operation in the published specs.
+    - name: opaque-continuation-token
+      applies_to:
+        - POST /ads/generate
+      request_field: memoryToken
+      response_field: memoryToken
+      semantics: >-
+        Ad generation is not paged in the usual sense. The response carries a
+        base64 memoryToken encoding the ad IDs already served plus a TTL; sending
+        it on the next request excludes previously served ads so a shopper
+        browsing page 2 does not see the same sponsored products again.
+      restriction: Product ads only — not supported for banner or Banner X ads.
+      docs: https://developers.citrusad.com/integration/reference/pagination
+
+versioning:
+  scheme: path-segment major version
+  positions:
+    - /v1/ — integration data sync and ad generation (/ads/generate, /ads/bannerx, /catalogs, /catalog-products, /customers, /orders, /filter-mapping, /oauth2/token)
+    - /v2/ — cross-sell categories (/v2/cross-sell-categories)
+    - /ads/v3/ — brand pages (version segment sits AFTER the resource segment, unlike v1 and v2)
+  header: none
+  negotiation: none
+  detail: lifecycle/epsilon-lifecycle.yml
+
+error_envelope:
+  consistent: false
+  variants:
+    - surface: Brand Pages (/ads/v3/*)
+      media_type: application/problem+json
+      standard: RFC 9457
+      shape: '{ "title": string, "status": integer, "detail": string, "instance": string }'
+      evidence: >-
+        Probed live 2026-08-12 — POST https://eu-ads.rmn.dotomi.com/ads/v3/brand-pages
+        with no credentials returned 401 with
+        content-type: application/problem+json;charset=iso-8859-1 and body
+        {"title":"Unauthorized.","status":401,"detail":"Missing or invalid API credentials.","instance":"/ads/v3/brand-pages"}
+    - surface: Ad generation (/v1/ads/*)
+      media_type: text/plain
+      standard: none
+      shape: a bare quoted string
+      evidence: >-
+        Probed live 2026-08-12 — POST https://eu-ads.rmn.dotomi.com/v1/ads/generate
+        with an empty JSON body returned 400 text/plain with body "catalogId must be set".
+        The published OpenAPI agrees: every 4xx/5xx response on the Integration API
+        declares content type text/plain with an empty example.
+    - surface: Filter Mapping / Cross-Sell Category
+      media_type: application/json
+      standard: none
+      shape: '{ "message": string } (spec-declared error schema)'
+  detail: errors/epsilon-problem-types.yml
+
+rate_limit_signaling:
+  documented: false
+  response_status: 429
+  headers: []
+  evidence: >-
+    429 is declared as a response on all 13 Integration API operations, but with
+    no description, no body schema and no documented headers. No RateLimit-*,
+    X-RateLimit-* or Retry-After header is documented anywhere, and none was
+    observed on live probes of eu-ads.rmn.dotomi.com. An agent has a status code
+    and nothing else to back off on.
+  detail: rate-limits/epsilon-rate-limits.yml
+
+request_tracing:
+  request_id_header: null
+  correlation:
+    - field: sessionId
+      note: >-
+        Caller-generated per-shopper session identifier. Must be held consistent
+        between ad requests and the subsequent order report, because attribution
+        joins on it. This is a business correlation key, not a request trace ID.
+  note: No request-id or trace header is documented or observed.
+
+connection_semantics:
+  persistent_http_required: true
+  note: >-
+    Unusual and explicit: the docs require a persistent HTTP connection for ad
+    generation, on the grounds that per-request TLS handshakes materially degrade
+    ad response times. Callers are told not to open a new connection per request.
+  docs: https://developers.citrusad.com/integration/reference/http-persistence-ad-caching-endpoints-1
+
+timeout_and_fallback:
+  documented: true
+  guidance: >-
+    Retailers are instructed to implement a graceful fallback: if the ad request
+    times out or errors, render the page without sponsored placements rather than
+    failing the page. Ad serving is treated as a best-effort enrichment of the
+    retailer's own page, not a hard dependency.
+  docs: https://developers.citrusad.com/integration/reference/timeouts-and-graceful-fallback-behaviour
+
+endpoint_naming_guidance:
+  note: >-
+    The docs advise retailers NOT to include "ads" in the path of the endpoint
+    they expose on their own domain, because ad blockers pattern-match on it.
+    Recorded because it is a real, published integration constraint that shapes
+    how the caller's own API surface must be designed.
+
+field_expansion:
+  supported: false
+sparse_fieldsets:
+  supported: false
+metadata:
+  supported: false
+  note: >-
+    No generic metadata bag. Extension is via typed fields (productFilters,
+    options, audience, bannerSlots) on the ad-generation request.
+
+cross_links:
+  authentication: authentication/epsilon-authentication.yml
+  errors: errors/epsilon-problem-types.yml
+  lifecycle: lifecycle/epsilon-lifecycle.yml
+  rate_limits: rate-limits/epsilon-rate-limits.yml
+  sandbox: sandbox/epsilon-sandbox.yml
+  data_model: data-model/epsilon-data-model.yml

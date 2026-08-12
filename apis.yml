@@ -1,28 +1,218 @@
 aid: epsilon
 name: Epsilon
-description: Epsilon is a company surfaced via the API Evangelist marketing integration graph — named
-  as an integration by 2 members of the programmable-marketing cohort — and added to the network as a
-  stub for full-pipeline profiling.
+description: >-
+  Epsilon is a Publicis Groupe marketing and advertising technology company that
+  operates identity-led, data-driven marketing across paid, owned and earned
+  channels. Its public, machine-readable API surface sits almost entirely inside
+  Epsilon Retail Media (the platform built on CitrusAd, which Publicis acquired in
+  2021 and folded into Epsilon), whose developer hub at developers.citrusad.com
+  publishes an Integration API for syncing catalogs, products, customers and
+  orders and for generating product, banner and Banner X ads; a Filter Mapping
+  API; a Cross-Sell Category API; and a Brand Pages API served from regional
+  *.rmn.dotomi.com hosts. Epsilon also runs Epsilon PeopleCloud (loyalty, CRM,
+  digital media) and CORE Private Exchange for publishers, but neither publishes a
+  public machine-readable contract. API access is provisioned by a Technical
+  Account Manager rather than self-service signup.
 url: https://raw.githubusercontent.com/api-evangelist/epsilon/refs/heads/main/apis.yml
+image: https://www.epsilon.com/images/logos/epsilon-og-image.png
 x-type: company
 x-source: harvest:marketing-integration-graph
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-12'
 modified: '2026-08-12'
 tags:
 - Company
-apis: []
+- Marketing
+- Advertising
+- Retail Media
+- Advertising Technology
+- Identity Resolution
+- Customer Data
+- Loyalty
+- Retail
+- Publicis Groupe
+apis:
+- aid: epsilon:epsilon-retail-media-integration-api
+  name: Epsilon Retail Media Integration API
+  description: >-
+    The core Epsilon Retail Media (CitrusAd) REST API. Retailers use it to sync
+    product catalogs, catalog products, customers and order data into the
+    platform, and to request product ads, static banner ads and Banner X
+    responsive ads for search, category and cross-sell placements. Requests are
+    JSON over HTTPS authenticated with an HTTP Basic API key; the /ads endpoints
+    additionally support OAuth 2.0 client-credentials bearer tokens. Ad-generation
+    endpoints are served from regional hosts on *.rmn.dotomi.com; the data-sync
+    endpoints are served from a per-tenant integration host on citrusad.com.
+  humanURL: https://developers.citrusad.com/integration/reference/api-overview
+  baseURL: https://integration-{tenant}.citrusad.com/v1
+  tags:
+  - Retail Media
+  - Advertising
+  - Catalogs
+  - Products
+  - Orders
+  - Customers
+  properties:
+  - type: OpenAPI
+    url: openapi/epsilon-retail-media-integration-openapi.json
+  - type: Documentation
+    url: https://developers.citrusad.com/integration/reference/api-overview
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/generate
+  - type: Overlay
+    url: overlays/epsilon-retail-media-integration-overlay.yaml
+- aid: epsilon:epsilon-retail-media-brand-pages-api
+  name: Epsilon Retail Media Brand Pages API
+  description: >-
+    Serves brand-page content modules for retailer-hosted brand landing pages.
+    A retailer routes /brands/{slug} on its own domain, calls POST
+    /ads/v3/brand-pages on its assigned regional Epsilon RMN ads host with the
+    urlSlug and catalogId, and renders the returned modules, theme and tracking
+    templates with its own UI components. Impression, click and add-to-cart
+    tracking is fired either client-to-server through a retailer reverse proxy or
+    server-to-server directly to the regional tracking host. Uses the same API key
+    as the rest of the Epsilon RMN platform. No OpenAPI is published for this
+    surface; the request and response contracts are documented in prose.
+  humanURL: https://developers.citrusad.com/integration/reference/brand-page-apis
+  baseURL: https://eu-ads.rmn.dotomi.com
+  tags:
+  - Retail Media
+  - Advertising
+  - Brand Pages
+  - Content
+  properties:
+  - type: Documentation
+    url: https://developers.citrusad.com/integration/reference/overview-1
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/brand-page-apis
+- aid: epsilon:epsilon-retail-media-filter-mapping-api
+  name: Epsilon Retail Media Filter Mapping API
+  description: >-
+    Manages filter mappings that translate a retailer's own product filter
+    vocabulary into the filters Epsilon Retail Media applies when selecting ads.
+    Five operations — create, list, get, update and delete a filter mapping —
+    authenticated with a JWT bearer token in the Authorization header.
+  humanURL: https://developers.citrusad.com/integration/reference/filtermapping
+  baseURL: https://{tenant}.citrusad.com/v1
+  tags:
+  - Retail Media
+  - Advertising
+  - Filters
+  - Targeting
+  properties:
+  - type: OpenAPI
+    url: openapi/epsilon-retail-media-filter-mapping-openapi.json
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/filtermapping
+  - type: Overlay
+    url: overlays/epsilon-retail-media-filter-mapping-overlay.yaml
+- aid: epsilon:epsilon-retail-media-cross-sell-category-api
+  name: Epsilon Retail Media Cross-Sell Category API
+  description: >-
+    Manages cross-sell category definitions used by the category cross-sell ad
+    placement, where ads for one category are shown against products in a
+    different, related category. Four operations — list, create, get and delete a
+    cross-sell category — authenticated with a JWT bearer token.
+  humanURL: https://developers.citrusad.com/integration/reference/crosssellcategory
+  baseURL: https://catalog.citrusad.com
+  tags:
+  - Retail Media
+  - Advertising
+  - Categories
+  - Cross-sell
+  properties:
+  - type: OpenAPI
+    url: openapi/epsilon-retail-media-cross-sell-category-openapi.json
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/crosssellcategory
+  - type: Overlay
+    url: overlays/epsilon-retail-media-cross-sell-category-overlay.yaml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/epsilon-domain-security.yml
 - type: Website
   url: https://epsilon.com/
+- type: DeveloperPortal
+  url: https://developers.citrusad.com/integration/reference/overview
+- type: Documentation
+  url: https://developers.citrusad.com/integration/reference/api-overview
+- type: APIReference
+  url: https://developers.citrusad.com/integration/reference/generate
+- type: GettingStarted
+  url: https://developers.citrusad.com/integration/reference/before-you-start
+- type: Support
+  url: https://help-center.peoplecloud.epsilon.com/
+- type: Blog
+  url: https://www.epsilon.com/us/insights/blog
+- type: TermsOfService
+  url: https://legal.epsilon.com/us/terms-and-conditions
+- type: PrivacyPolicy
+  url: https://legal.epsilon.com/global-privacy-policies
+- type: LLMsTxt
+  url: llms/epsilon-llms.txt
+- type: WellKnown
+  url: well-known/epsilon-well-known.yml
+- type: APICatalog
+  url: https://developers.citrusad.com/.well-known/api-catalog
+- type: Authentication
+  url: authentication/epsilon-authentication.yml
+- type: Conventions
+  url: conventions/epsilon-conventions.yml
+- type: ErrorCatalog
+  url: errors/epsilon-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/epsilon-lifecycle.yml
+- type: Conformance
+  url: conformance/epsilon-conformance.yml
+- type: DataModel
+  url: data-model/epsilon-data-model.yml
+- type: Sandbox
+  url: sandbox/epsilon-sandbox.yml
+- type: Packages
+  url: packages/epsilon-packages.yml
+- type: Plans
+  url: plans/epsilon-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/epsilon-rate-limits.yml
+- type: AgentSkill
+  url: skills/_index.yml
 x-vouched-by:
 - Persado
 - mParticle
 x-vouch-count: 2
+# Pointers deliberately NOT emitted, and why. Each of these has an artifact on
+# disk recording an absence; wiring the canonical type would assert the provider
+# publishes a surface it does not.
+#   ChangeLog     — changelog/epsilon-changelog.yml records published: false
+#                   (/integration/changelog 404s). No changelog exists.
+#   StatusPage    — lifecycle/ records that every status.* host fails to resolve;
+#                   epsilon.statuspage.io is an unfinished template whose
+#                   components are named "API (example)".
+#   Deprecation   — no deprecation, sunset or EOL policy anywhere in the 121-page
+#                   developer hub index.
+#   SDKs          — packages/ records package_count: 0 verified across npm, PyPI,
+#                   Packagist, RubyGems, NuGet and GitHub.
+#   Security /
+#   SecurityTxt   — no RFC 9116 policy, no VDP, no bug bounty on any host.
+#   Compliance /
+#   TrustCenter   — no published certifications; trust.epsilon.com does not resolve.
+#   Idempotency   — conventions/ records supported: false. No Idempotency-Key
+#                   mechanism exists on any Epsilon Retail Media surface.
+#   MCPServer     — mcp/ is status: candidate, derived from OpenAPI. Epsilon runs
+#                   no MCP server.
+#   AgentCard     — /.well-known/agent-card.json and /.well-known/agent.json miss
+#                   on every host. Nothing written; search-only by contract.
+#   AsyncAPI /
+#   Webhooks      — no event, streaming or webhook surface exists to describe.
+#   Pricing       — citrusad.com/pricing is a demo-request form with no prices;
+#                   plans/ records plan_count: 0.
+x-enrichment:
+  date: '2026-08-12'
+  status: enriched
+  artifacts_added: 26
+  pass: local-v1

@@ -1,0 +1,98 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://developers.citrusad.com/integration/reference/ (full reference walked
+  via https://developers.citrusad.com/integration/llms.txt), plus status-page and
+  changelog probes recorded below.
+description: >-
+  Epsilon Retail Media versions by path segment and publishes no deprecation
+  policy, no sunset signalling, no SLA and no changelog. Three API generations
+  are live simultaneously (v1, v2, v3) with no statement of which is current, how
+  long an older one is supported, or how a breaking change would be announced.
+  Each documentation page carries an updatedAt timestamp, which is the only
+  temporal signal the platform emits.
+
+versioning:
+  scheme: path-segment major version
+  mechanism: URL path
+  header: none
+  versions_live:
+    - version: v1
+      surfaces: [/ads/generate, /ads/bannerx, /catalogs, /catalog-products, /customers, /orders, /filter-mapping, /oauth2/token]
+      spec_version_field: '1'
+    - version: v2
+      surfaces: [/v2/cross-sell-categories]
+      spec_version_field: v2
+    - version: v3
+      surfaces: [/ads/v3/brand-pages]
+      note: >-
+        Version segment sits after the resource segment rather than at the root,
+        breaking the pattern set by v1 and v2.
+  current_version_declared: false
+  notes: >-
+    The Filter Mapping API's published OpenAPI declares info.version
+    "0.0.1-alpha" while being documented as a generally available integration
+    surface. That is a live contract self-describing as alpha.
+
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  evidence: >-
+    No deprecation, sunset, end-of-life, migration or upgrade page exists in the
+    developer hub index (llms.txt lists all 121 published pages; none covers
+    lifecycle policy). No operation or parameter in any of the three published
+    OpenAPI documents carries deprecated: true.
+  deprecated_operations: []
+
+sla:
+  url: null
+  public_uptime_target: null
+  notes: >-
+    No published SLA. The API Terms of Use
+    (https://developers.citrusad.com/integration/reference/epsilon-api-terms-of-use)
+    and Acceptable Use Policy are published, but neither states an availability
+    commitment. Commercial terms are handled through the Technical Account
+    Manager relationship.
+
+status_page:
+  published: false
+  probes:
+    - {url: 'https://status.citrusad.com/', status: 000, note: does not resolve}
+    - {url: 'https://status.epsilon.com/', status: 000, note: does not resolve}
+    - {url: 'https://status.peoplecloud.epsilon.com/', status: 000, note: does not resolve}
+    - url: 'https://epsilon.statuspage.io/api/v2/summary.json'
+      status: 200
+      note: >-
+        NOT CREDITED. A Statuspage exists at this address but its components are
+        literally named "API (example)" and "Management Portal (example)",
+        created 2026-03-17 and never updated since 2026-03-17. It is an unfinished
+        template, it is not linked from any Epsilon or CitrusAd property, and it
+        is not verifiable as Epsilon's official status page. Recorded as probed
+        evidence, deliberately NOT wired as a StatusPage pointer.
+  note: No StatusPage pointer is emitted in apis.yml. There is no operational status surface a consumer can rely on.
+
+changelog:
+  published: false
+  probes:
+    - {url: 'https://developers.citrusad.com/integration/changelog', status: 404}
+    - {url: 'https://developers.citrusad.com/changelog', status: 200, note: 'soft — redirects to /integration/reference/overview, not a changelog'}
+  detail: changelog/epsilon-changelog.yml
+
+freshness:
+  signal: per-page updatedAt timestamps in the ReadMe hub
+  most_recent_observed: '2026-07-01'
+  observed_range: '2026-05-12 to 2026-07-01'
+  note: >-
+    The bulk of the reference carries updatedAt 2026-05-12 (a platform-wide
+    re-publish). The Brand Pages section, added later, carries 2026-06-19 to
+    2026-07-01. The docs are actively maintained; the lifecycle policy is simply
+    absent.
+
+gaps:
+  - No deprecation or sunset policy of any kind, on a platform running three concurrent API generations.
+  - No changelog, so a breaking change would reach integrators only through their Technical Account Manager.
+  - No status page, so there is no way for a retailer to distinguish an Epsilon outage from their own.
+  - No SLA or published uptime target for a service that sits in the shopper page-render path.

@@ -1,0 +1,74 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+provider: Epsilon
+providerId: epsilon
+generated: '2026-08-12'
+method: searched
+created: '2026-08-12'
+modified: '2026-08-12'
+source: >-
+  A walk of all 121 pages indexed at
+  https://developers.citrusad.com/integration/llms.txt (no page matches
+  rate limit, throttl, quota, 429, Retry-After or X-RateLimit), plus derivation
+  from openapi/*.json and live unauthenticated probes of
+  https://eu-ads.rmn.dotomi.com on 2026-08-12.
+description: >-
+  Epsilon Retail Media declares HTTP 429 on all 13 Integration API operations and
+  documents nothing else. There is no published limit, no window, no scope, no
+  burst allowance, and no response header — not RateLimit-*, not X-RateLimit-*,
+  not Retry-After. The declared 429 response in the OpenAPI carries no
+  description, no schema and an empty example. A client that gets throttled is
+  told only that it was throttled, with no signal for how long to back off, which
+  matters more than usual here because ad generation sits synchronously in the
+  shopper's page render.
+
+limit_count: 0
+limits: []
+
+headers: {}
+observed_headers: []
+
+responseCodes:
+  throttled: 429
+
+declared_in_spec:
+  status: 429
+  operations: 13
+  spec: openapi/epsilon-retail-media-integration-openapi.json
+  declaration: '{"description": "429", "content": {"text/plain": {"examples": {"Result": {"value": ""}}}}}'
+  note: >-
+    The Filter Mapping and Cross-Sell Category specs do not declare 429 at all —
+    their documented error set stops at 500.
+
+evidence:
+  - {url: 'https://developers.citrusad.com/integration/llms.txt', status: 200, note: 'Full docs index; no rate-limit, quota or throttling page exists.', checked: '2026-08-12'}
+  - url: 'https://eu-ads.rmn.dotomi.com/v1/ads/generate'
+    status: 400
+    note: >-
+      Live unauthenticated POST. Response carried no RateLimit-*, X-RateLimit-* or
+      Retry-After header — only server, date, content-type and content-length.
+    checked: '2026-08-12'
+  - url: 'https://eu-ads.rmn.dotomi.com/ads/v3/brand-pages'
+    status: 401
+    note: Same — no rate-limit headers present on the response.
+    checked: '2026-08-12'
+
+related_guidance:
+  - name: Persistent HTTP connection required
+    note: >-
+      Not a rate limit, but the nearest thing the docs publish to a throughput
+      contract: retailers are required to hold a persistent HTTP connection for ad
+      generation because per-request TLS handshakes degrade response times.
+    url: https://developers.citrusad.com/integration/reference/http-persistence-ad-caching-endpoints-1
+  - name: Timeouts and graceful fallback
+    note: >-
+      Retailers are told to render the page without sponsored placements when an
+      ad request times out or errors, which is the documented mitigation for both
+      throttling and outage.
+    url: https://developers.citrusad.com/integration/reference/timeouts-and-graceful-fallback-behaviour
+
+gaps:
+  - No published limit of any kind, for any scope or window.
+  - No rate-limit response headers, so a client cannot see remaining quota or reset time.
+  - No Retry-After on 429, so backoff is guesswork.
+  - The 429 response is declared with no description or schema, so generated clients get an untyped throttle path.

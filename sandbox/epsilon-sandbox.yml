@@ -1,0 +1,100 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://developers.citrusad.com/integration/reference/before-you-start,
+  /go-live-checklist-1, /uat-tests-1, /validation-troubleshooting,
+  /integrate-your-banner-x-previewer
+docs:
+  - https://developers.citrusad.com/integration/reference/before-you-start
+  - https://developers.citrusad.com/integration/reference/uat-tests-1
+  - https://developers.citrusad.com/integration/reference/go-live-checklist-1
+description: >-
+  Epsilon Retail Media runs a real sandbox, but it is provisioned rather than
+  self-served: a retailer's Technical Account Manager creates the sandbox on their
+  behalf and grants access. Sandbox and production are separate environments with
+  separate team IDs and separate API keys, and there is no key-prefix convention
+  that lets a caller tell them apart from the credential alone. There are no
+  published magic test values — no test GTINs, no fixture customers, no synthetic
+  order IDs — because the sandbox is populated with the retailer's own synced
+  catalog and campaigns created by hand in the platform UI.
+
+self_service: false
+provisioning: >-
+  Contact your Technical Account Manager (or Epsilon support) to have a sandbox
+  created. It is not available by signup.
+
+modes:
+  - name: sandbox
+    credentials:
+      team_id: Distinct value, shown in the platform UI under Integration Settings.
+      api_key: Distinct secret value, revealed via the API Key page in the platform UI.
+    note: >-
+      Requires at least one synced catalog with at least one product, plus active
+      and approved campaigns, before any ad will be returned. An empty sandbox
+      returns no ads rather than an error, which is the most common first-run
+      surprise.
+  - name: production
+    credentials:
+      team_id: Different from sandbox.
+      api_key: Different from sandbox.
+
+key_formats:
+  documented: false
+  note: >-
+    No test/live key prefix convention is published. Both environments use the
+    same "Basic base64(<apiKey>:)" credential shape, so an integrator cannot tell
+    from a key which environment it points at — the only distinguishing signal is
+    the base URL Epsilon assigns.
+
+test_values:
+  cards: []
+  accounts: []
+  magic_identifiers: []
+  note: >-
+    None published. Nothing to record and nothing invented. Test data is the
+    retailer's own catalog synced into the sandbox.
+
+prerequisites:
+  - Sandbox created by the Technical Account Manager.
+  - Retailer team ID for the sandbox environment.
+  - Sandbox API key.
+  - At least one catalog synced with at least one product.
+  - At least one active, approved campaign in the sandbox.
+
+validation_tooling:
+  - name: UAT test suite
+    kind: documented manual test plan
+    url: https://developers.citrusad.com/integration/reference/uat-tests-1
+    note: >-
+      A published set of user-acceptance tests an integrator is expected to run
+      against the sandbox before go-live.
+  - name: Go-live checklist
+    kind: checklist
+    url: https://developers.citrusad.com/integration/reference/go-live-checklist-1
+  - name: Validation and troubleshooting guide
+    kind: documentation
+    url: https://developers.citrusad.com/integration/reference/validation-troubleshooting
+  - name: Banner X previewer
+    kind: hosted preview surface
+    url: https://developers.citrusad.com/integration/reference/integrating-your-banner-x-previewer
+    note: >-
+      A previewer the retailer integrates so campaign creators can see Banner X
+      creative rendered in the retailer's own layout before approval. Closest
+      thing the platform has to a playground, but it previews creative, not API
+      calls.
+
+observed_hosts:
+  - host: staging-test.citrusad.com
+    referenced_in: https://developers.citrusad.com/integration/reference/uat-tests-1
+    example_url: https://staging-test.citrusad.com/v1/ads/generate
+    dns_resolves: false
+    checked: '2026-08-12'
+    note: >-
+      Named in the UAT documentation as an example sandbox host. It does not
+      resolve publicly, consistent with sandbox hosts being tenant-assigned.
+
+gaps:
+  - No self-service sandbox, so an evaluator cannot try the API before a commercial conversation.
+  - No published test data or magic values, so a sandbox is only useful once the retailer has synced real catalog data.
+  - No test/live key prefix, so environment mix-ups are not detectable client-side.
+  - No API console or interactive "try it" against a shared demo tenant.

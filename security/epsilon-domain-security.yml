@@ -1,0 +1,33 @@
+generated: '2026-08-12'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: epsilon.com
+  https: true
+  tls_version: TLSv1.2
+  cert_expires: Jan  1 23:59:59 2027 GMT
+  hsts: false
+- host: developers.citrusad.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 20 05:43:03 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: eu-ads.rmn.dotomi.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  9 14:44:06 2026 GMT
+  hsts: null
+domains:
+- domain: epsilon.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine
+- domain: citrusad.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: none

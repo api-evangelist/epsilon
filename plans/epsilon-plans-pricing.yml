@@ -1,0 +1,42 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+provider: Epsilon
+providerId: epsilon
+generated: '2026-08-12'
+method: searched
+created: '2026-08-12'
+modified: '2026-08-12'
+source: >-
+  https://citrusad.com/pricing (200 — a "Contact us to arrange a quick demo"
+  enquiry form with no prices), https://www.epsilon.com/us/pricing (404),
+  https://developers.citrusad.com/integration/reference/pricing (404), and a walk
+  of all 121 pages indexed at https://developers.citrusad.com/integration/llms.txt.
+description: >-
+  Epsilon publishes no plans, tiers or rates for any of its products. The
+  /pricing URL on citrusad.com resolves to a lead-capture form asking for name,
+  company, email, website and country to "arrange a quick demo" — there is not a
+  single number on it. Epsilon Retail Media is sold through a managed commercial
+  relationship: campaigns are funded from a per-team wallet (the reporting data
+  warehouse exposes wallet balance and ledger transaction views), but neither the
+  wallet mechanics, the ad rate card, nor any API access fee is published. API
+  credentials themselves are issued by a Technical Account Manager, so there is
+  no self-service tier to price.
+
+plan_count: 0
+plans: []
+
+evidence:
+  - {url: 'https://citrusad.com/pricing', status: 200, note: 'Enquiry/demo form. No tiers, no rates, no currency.', checked: '2026-08-12'}
+  - {url: 'https://www.epsilon.com/us/pricing', status: 404, checked: '2026-08-12'}
+  - {url: 'https://developers.citrusad.com/integration/reference/pricing', status: 404, checked: '2026-08-12'}
+  - {url: 'https://developers.citrusad.com/integration/llms.txt', status: 200, note: 'Complete 121-page docs index; no pricing, plans, billing or rate-card page.', checked: '2026-08-12'}
+
+commercial_model:
+  motion: enterprise / contact-sales
+  self_service_signup: false
+  credential_issuance: Technical Account Manager
+  billing_signal_visible_in_product: >-
+    The CitrusAd Reporting data warehouse exposes Wallet, wallet-balance and
+    Ledger Transaction Summary views (billing information, wallet top-ups), which
+    confirms a prepaid-wallet ad-spend model — but the rates charged against that
+    wallet are not published.

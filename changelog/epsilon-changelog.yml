@@ -1,0 +1,42 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  Probes of https://developers.citrusad.com/integration/changelog (404) and
+  https://developers.citrusad.com/changelog (soft — redirects to
+  /integration/reference/overview), plus the per-page updatedAt frontmatter served
+  on every .md page of the developer hub.
+description: >-
+  Epsilon Retail Media publishes no changelog, release notes or version history.
+  The only dated signal the platform emits is an updatedAt timestamp in the
+  frontmatter of each documentation page, which records when a doc was last
+  edited — not what changed in the API. This artifact records that absence and
+  captures the documentation-freshness signal that exists in its place, so the
+  gap is countable rather than invisible.
+
+published: false
+scheme: none
+current_version: null
+
+evidence:
+  - {url: 'https://developers.citrusad.com/integration/changelog', status: 404, checked: '2026-08-12'}
+  - {url: 'https://developers.citrusad.com/changelog', status: 200, note: 'Soft — 302/rewrite to /integration/reference/overview. Not a changelog.', checked: '2026-08-12'}
+  - {url: 'https://developers.citrusad.com/integration/llms.txt', status: 200, note: 'Complete 121-page index; no changelog, release-notes, updates or "what''s new" page.', checked: '2026-08-12'}
+
+entries: []
+
+documentation_freshness:
+  signal: updatedAt frontmatter on each page of the developer hub
+  note: >-
+    Not a changelog. Recorded because it is the only temporal evidence available
+    for how actively this API surface is maintained.
+  observations:
+    - {date: '2026-07-01', pages: [integration-architecture], note: 'Most recent edit observed across the reference.'}
+    - {date: '2026-06-24', pages: [overview-1], note: 'Brand Pages overview.'}
+    - {date: '2026-06-19', pages: [authentication-1, prerequisites], note: 'Brand Pages section — the newest product surface in the hub.'}
+    - {date: '2026-05-29', pages: ['help-center.peoplecloud.epsilon.com welcome page'], note: 'PeopleCloud help centre, flagged stale: true in its own frontmatter.'}
+    - {date: '2026-05-12', pages: [api-overview, generate, before-you-start, pagination, oauth-20-authentication, brand-page-apis, reporting-overview, 'and the bulk of the reference'], note: 'A platform-wide re-publish; most pages share this timestamp.'}
+
+gaps:
+  - No changelog, so a breaking change would reach integrators only through their Technical Account Manager.
+  - Three API generations (v1, v2, v3) are live with no record of when any of them was introduced or what superseded what.
+  - No RSS, Atom or email release feed for the developer hub.

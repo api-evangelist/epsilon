@@ -1,0 +1,118 @@
+generated: '2026-08-12'
+method: probed
+source: >-
+  Direct anonymous HTTP probes of /.well-known/* on every Epsilon host reachable
+  from the profile — the corporate site, the Epsilon Retail Media developer hub,
+  the PeopleCloud help centre, the CORE Private Exchange publisher support site,
+  the citrusad.com marketing site, and the live regional ad-serving host
+  eu-ads.rmn.dotomi.com.
+description: >-
+  Exactly one .well-known document is served anywhere across Epsilon's public
+  estate: an RFC 9727 api-catalog linkset on the Epsilon Retail Media developer
+  hub (developers.citrusad.com), which points a machine at the API reference.
+  Nothing else is served. Two hosts (citrusad.com, publishersupport.epsilon.com)
+  answer HTTP 200 with their SPA shell for EVERY .well-known path including ones
+  that cannot exist — those are catch-all false positives, recorded as misses,
+  not as documents.
+
+hosts:
+  - host: developers.citrusad.com
+    note: Epsilon Retail Media developer hub (ReadMe-hosted). The only host serving a real .well-known document.
+    probes:
+      - path: /.well-known/api-catalog
+        status: 200
+        content_type: application/linkset+json
+        file: epsilon-developers-citrusad-api-catalog.json
+        document: true
+        note: >-
+          RFC 9727 linkset. anchor https://developers.citrusad.com/integration,
+          service-doc https://developers.citrusad.com/integration/reference.
+          The nested service-desc target /integration/.well-known/api-catalog
+          returned an empty body when fetched.
+      - path: /.well-known/security.txt
+        status: 302
+        document: false
+        note: Redirects to / — no RFC 9116 policy served.
+      - path: /.well-known/openid-configuration
+        status: 404
+        document: false
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        document: false
+      - path: /.well-known/ai-plugin.json
+        status: 302
+        document: false
+      - path: /.well-known/agent-card.json
+        status: 302
+        document: false
+      - path: /.well-known/agent.json
+        status: 302
+        document: false
+
+  - host: www.epsilon.com
+    note: Corporate site (epsilon.com 301s here).
+    probes:
+      - {path: /.well-known/security.txt, status: 404, document: false}
+      - {path: /.well-known/openid-configuration, status: 404, document: false}
+      - {path: /.well-known/oauth-authorization-server, status: 404, document: false}
+      - {path: /.well-known/api-catalog, status: 404, document: false}
+      - {path: /.well-known/ai-plugin.json, status: 404, document: false}
+      - {path: /.well-known/agent-card.json, status: 404, document: false}
+      - {path: /.well-known/agent.json, status: 404, document: false}
+
+  - host: help-center.peoplecloud.epsilon.com
+    note: Epsilon PeopleCloud help centre.
+    probes:
+      - {path: /.well-known/security.txt, status: 404, document: false}
+      - {path: /.well-known/openid-configuration, status: 404, document: false}
+      - {path: /.well-known/oauth-authorization-server, status: 404, document: false}
+      - {path: /.well-known/api-catalog, status: 404, document: false}
+      - {path: /.well-known/ai-plugin.json, status: 404, document: false}
+      - {path: /.well-known/agent-card.json, status: 404, document: false}
+      - {path: /.well-known/agent.json, status: 404, document: false}
+
+  - host: eu-ads.rmn.dotomi.com
+    note: Live regional Epsilon Retail Media ad-serving host (verified serving /v1/ads/* and /ads/v3/brand-pages).
+    probes:
+      - {path: /.well-known/api-catalog, status: 404, document: false}
+      - {path: /.well-known/security.txt, status: 404, document: false}
+      - {path: /.well-known/agent-card.json, status: 404, document: false}
+
+  - host: citrusad.com
+    note: >-
+      SPA catch-all. Answers 200 text/html (~53KB, identical body) for every
+      .well-known path probed, including ones that cannot exist. NOT a document
+      hit — recorded as a miss.
+    catch_all_200: true
+    probes:
+      - {path: /.well-known/security.txt, status: 200, content_type: text/html, document: false}
+      - {path: /.well-known/openid-configuration, status: 200, content_type: text/html, document: false}
+      - {path: /.well-known/oauth-authorization-server, status: 200, content_type: text/html, document: false}
+      - {path: /.well-known/api-catalog, status: 200, content_type: text/html, document: false}
+      - {path: /.well-known/ai-plugin.json, status: 200, content_type: text/html, document: false}
+      - {path: /.well-known/agent-card.json, status: 200, content_type: text/html, document: false}
+      - {path: /.well-known/agent.json, status: 200, content_type: text/html, document: false}
+
+  - host: publishersupport.epsilon.com
+    note: >-
+      CORE Private Exchange publisher support site (Angular SPA). Same catch-all
+      shape — 200 text/html (~34KB, identical body) for every path. NOT a hit.
+    catch_all_200: true
+    probes:
+      - {path: /.well-known/security.txt, status: 200, content_type: text/html, document: false}
+      - {path: /.well-known/openid-configuration, status: 200, content_type: text/html, document: false}
+      - {path: /.well-known/oauth-authorization-server, status: 200, content_type: text/html, document: false}
+      - {path: /.well-known/api-catalog, status: 200, content_type: text/html, document: false}
+      - {path: /.well-known/ai-plugin.json, status: 200, content_type: text/html, document: false}
+      - {path: /.well-known/agent-card.json, status: 200, content_type: text/html, document: false}
+      - {path: /.well-known/agent.json, status: 200, content_type: text/html, document: false}
+
+summary:
+  documents_served: 1
+  document_paths: ['/.well-known/api-catalog on developers.citrusad.com']
+  security_txt: false
+  openid_configuration: false
+  oauth_authorization_server: false
+  agent_card: false
+  catch_all_hosts: [citrusad.com, publishersupport.epsilon.com]
+checked: '2026-08-12'

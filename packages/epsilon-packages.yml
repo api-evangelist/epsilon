@@ -1,0 +1,43 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  Registry searches against registry.npmjs.org, pypi.org, packagist.org,
+  rubygems.org, api.nuget.org and the GitHub search API, plus a full walk of the
+  Epsilon Retail Media developer hub index
+  (https://developers.citrusad.com/integration/llms.txt, 121 pages).
+description: >-
+  Epsilon publishes no first-party client libraries. Not one SDK, helper package
+  or code sample library exists on any public registry for Epsilon Retail Media,
+  CitrusAd, Epsilon PeopleCloud or CORE Private Exchange, and the developer hub
+  contains no SDK, client-library or "install" page. Integrators are expected to
+  write raw HTTP against the documented JSON contracts. This is an honest zero,
+  verified against every registry, not an unchecked gap.
+
+package_count: 0
+official_package_count: 0
+packages: []
+
+searches:
+  - {registry: npm, endpoint: 'https://registry.npmjs.org/-/v1/search?text=citrusad', results: 0, checked: '2026-08-12'}
+  - {registry: npm, endpoint: 'https://registry.npmjs.org/-/v1/search?text=epsilon+retail+media', results: 'no first-party match', checked: '2026-08-12'}
+  - {registry: pypi, endpoint: 'https://pypi.org/pypi/citrusad/json', status: 404, checked: '2026-08-12'}
+  - {registry: pypi, endpoint: 'https://pypi.org/pypi/epsilon-retail-media/json', status: 404, checked: '2026-08-12'}
+  - {registry: packagist, endpoint: 'https://packagist.org/search.json?q=citrusad', results: 'no first-party match', checked: '2026-08-12'}
+  - {registry: rubygems, endpoint: 'https://rubygems.org/api/v1/search.json?query=citrusad', results: 0, checked: '2026-08-12'}
+  - {registry: nuget, endpoint: 'https://azuresearch-usnc.nuget.org/query?q=citrusad', results: 0, totalHits: 0, checked: '2026-08-12'}
+  - {registry: github, endpoint: 'https://api.github.com/search/repositories?q=citrusad', results: 4, note: 'All four are unrelated third-party repositories (ad-blocking lists, a UI kit). No Epsilon or CitrusAd organization exists on GitHub.', checked: '2026-08-12'}
+  - {source: docs, endpoint: 'https://developers.citrusad.com/integration/llms.txt', note: 'No SDK, client library, install, quickstart-code or code-samples page among the 121 indexed pages.', checked: '2026-08-12'}
+
+notes:
+  - >-
+    Because there are no packages, there are no version or published dates to
+    record and no abandonment signal to read. The absence is the finding.
+  - >-
+    No SDKs pointer is emitted in apis.yml — sdk_count is genuinely zero and
+    asserting otherwise would be false.
+  - >-
+    Client-side distribution is not the explanation either: Epsilon Retail Media
+    is deliberately a server-to-server integration (the docs instruct retailers
+    to call from their own backend and even to avoid "ads" in their own endpoint
+    path so ad blockers do not intercept it), so there is no CDN-hosted browser
+    bundle to version-check.

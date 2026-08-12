@@ -1,0 +1,178 @@
+generated: '2026-08-12'
+method: derived
+source: >-
+  Derived from the request/response schemas and id-reference fields in
+  openapi/epsilon-retail-media-integration-openapi.json,
+  openapi/epsilon-retail-media-filter-mapping-openapi.json and
+  openapi/epsilon-retail-media-cross-sell-category-openapi.json, enriched from
+  https://developers.citrusad.com/integration/reference/catalog-products-2,
+  /order-data-1, /audience-targeting-new, /brand-page-apis and /reporting-overview.
+docs: https://developers.citrusad.com/integration/reference/data-overview-1
+notation: >-
+  relationships use has_one / has_many / belongs_to with the foreign-key field
+  name; direction is from the entity that owns the reference.
+description: >-
+  The Epsilon Retail Media entity graph. Everything hangs off Catalog: a retailer
+  syncs one catalog, fills it with products keyed by GTIN, optionally syncs
+  customers and their segments for audience targeting, requests ads against a
+  placement, and closes the loop by reporting orders. Attribution is the join —
+  sessionId ties an ad request to an order, which is why the docs make sessionId
+  consistency a hard requirement.
+
+entities:
+  - name: Team
+    key: teamId
+    domain: platform
+    description: >-
+      A tenant on the platform. Teams are either retailer teams (own the catalog
+      and the site) or supplier teams (advertisers). The team ID differs between
+      sandbox and production.
+  - name: Catalog
+    key: catalogId
+    domain: catalog
+    description: >-
+      The container for a retailer's product data and the primary scoping key on
+      almost every operation. Typically one per retailer.
+    operations: [create-or-update-a-catalog]
+  - name: CatalogProduct
+    key: gtin
+    scoped_by: catalogId
+    domain: catalog
+    description: >-
+      A product within a catalog, keyed by GTIN. Carries the fields ad selection
+      and rendering need — price, images, categories, filters, availability.
+    operations: [create-or-update-a-product, retrieve-a-list-of-products, retrieve-a-product]
+  - name: Customer
+    key: customerId
+    domain: audience
+    description: >-
+      A retailer's shopper, synced so ads can be targeted to them. Caller-supplied
+      identifier; the same value is sent on ad requests as customerId.
+    operations: [create-or-update-a-customer, retrieve-a-list-of-customers, retrieve-a-customer]
+  - name: Segment
+    domain: audience
+    description: >-
+      An audience segment a customer belongs to. Linked and unlinked through the
+      manage-segments operation rather than by rewriting the customer.
+    operations: [manage-customers-and-segments]
+  - name: Order
+    key: orderId
+    domain: attribution
+    description: >-
+      A completed purchase reported back to Epsilon. The measurement half of the
+      loop — ad spend is attributed by matching the order's sessionId and its
+      line-item GTINs against served ads.
+    operations: [report-an-order, retrieve-a-list-of-orders, retrieve-an-order]
+  - name: AdRequest
+    domain: ad-serving
+    description: >-
+      A request for ads against a catalog and a placement. Not a stored resource
+      the caller can read back; it is the input to ad selection.
+    operations: [generate, bannerx]
+  - name: Ad
+    key: id
+    domain: ad-serving
+    description: >-
+      A single served ad — product, banner or Banner X — carrying an ad id, the
+      advertised gtin, position, expiry and tracking URLs.
+  - name: Placement
+    domain: ad-serving
+    description: >-
+      Where on the retailer's site ads are requested — search, category,
+      cross-sell, or a named banner slot. Determines which request fields apply
+      (searchTerm for search, targetedProductGtin for cross-sell).
+  - name: MemoryToken
+    domain: ad-serving
+    description: >-
+      An opaque base64 continuation token returned with product ads, encoding the
+      ad IDs already served plus a TTL, so subsequent pages exclude them.
+  - name: FilterMapping
+    key: id
+    domain: targeting
+    description: >-
+      Maps a retailer's own filter vocabulary onto the filters Epsilon applies
+      during ad selection.
+    operations: [createFilterMapping, listFilterMappings, getFilterMapping, updateFilterMapping, deleteFilterMapping]
+  - name: CrossSellCategory
+    key: id
+    domain: targeting
+    description: >-
+      A category-to-category relationship enabling the cross-sell placement, where
+      ads for one category are served against products in a related category.
+    operations: [listCrossSellCategories, createCrossSellCategory, getCrossSellCategory, deleteCrossSellCategory]
+  - name: BrandPage
+    key: urlSlug
+    scoped_by: catalogId
+    domain: brand-pages
+    description: >-
+      A brand landing-page experience hosted on the retailer's own domain and
+      populated from Epsilon-managed content modules. Addressed by urlSlug.
+  - name: ContentModule
+    domain: brand-pages
+    description: >-
+      A renderable block within a brand page (hero, product grid, recipe, model
+      shot and similar), carrying contentData, a theme and per-slot trackers.
+  - name: TrackingEvent
+    domain: attribution
+    description: >-
+      Impression, click, add-to-cart, link and interaction events, fired either
+      client-to-server through the retailer's reverse proxy or server-to-server
+      to the regional tracking host, composed from trackingTemplates plus per-slot
+      params.
+
+relationships:
+  - {from: Team, to: Catalog, kind: has_many, via: teamId}
+  - {from: Catalog, to: CatalogProduct, kind: has_many, via: catalogId}
+  - {from: Catalog, to: Customer, kind: has_many, via: catalogId}
+  - {from: Customer, to: Segment, kind: has_many, via: segments}
+  - {from: AdRequest, to: Catalog, kind: belongs_to, via: catalogId}
+  - {from: AdRequest, to: Customer, kind: belongs_to, via: customerId}
+  - {from: AdRequest, to: Placement, kind: belongs_to, via: placement}
+  - {from: AdRequest, to: Ad, kind: has_many, via: ads}
+  - {from: AdRequest, to: MemoryToken, kind: has_one, via: memoryToken}
+  - {from: Ad, to: CatalogProduct, kind: belongs_to, via: gtin}
+  - {from: Ad, to: TrackingEvent, kind: has_many, via: trackers}
+  - {from: Order, to: Catalog, kind: belongs_to, via: catalogId}
+  - {from: Order, to: Customer, kind: belongs_to, via: customerId}
+  - {from: Order, to: CatalogProduct, kind: has_many, via: gtin}
+  - {from: FilterMapping, to: Catalog, kind: belongs_to, via: catalogId}
+  - {from: CrossSellCategory, to: Catalog, kind: belongs_to, via: catalogId}
+  - {from: BrandPage, to: Catalog, kind: belongs_to, via: catalogId}
+  - {from: BrandPage, to: ContentModule, kind: has_many, via: modules}
+  - {from: ContentModule, to: TrackingEvent, kind: has_many, via: trackers}
+  - {from: ContentModule, to: CatalogProduct, kind: has_many, via: gtin}
+
+join_keys:
+  - key: catalogId
+    role: The universal scoping key. Present on ad requests, product sync, customer sync, order reports, filter mappings, cross-sell categories and brand-page requests.
+  - key: gtin
+    role: Product identity across catalog sync, ad response and order line items. The join that makes attribution possible.
+  - key: sessionId
+    role: >-
+      Caller-generated shopper-session identifier. Must be identical on the ad
+      request and the subsequent order report or the sale will not attribute.
+      This is the single most load-bearing field in the integration and it is the
+      caller's responsibility to keep stable.
+  - key: customerId
+    role: Retailer's own shopper identifier, used for audience targeting and order association.
+  - key: teamId
+    role: Tenant scope on list operations and order reporting; differs between sandbox and production.
+
+analytical_model:
+  name: CitrusAd Reporting data warehouse
+  access: >-
+    Not a REST API. Access is granted to BigQuery datasets — either directly to a
+    client's own GCP project, or via a service account with BigQuery API access
+    for non-GCP clients. Provisioned on request and subject to approval.
+  layers: [Platform Data, Staged Data, Core Dataset, Aggregated Core Dataset, Reporting Datamart, Insights, Visualisation]
+  access_tiers: [namespace, retailer, supplier, integrator]
+  dimensions: [Campaigns, Product Catalogs, Products, Teams, Wallets, Search Terms, Categories, Placements]
+  facts: [Ad Request Statistics, Realised Ad Statistics, Enhanced Attribution Statistics, FTA Campaign Spend, Ledger Transaction Summaries, Order Statistics]
+  docs: https://developers.citrusad.com/integration/reference/reporting-overview
+  schema_reference: https://developers.citrusad.com/integration/reference/reporting-reference
+  note: >-
+    A full table/view-level schema reference is published (several hundred
+    reporting views under the reporting.* and reportingviz_* namespaces). It is
+    documented as SQL/BigQuery objects, not as an API contract, so it is recorded
+    here as the analytical counterpart to the operational graph above rather than
+    modelled as entities.

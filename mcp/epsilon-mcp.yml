@@ -1,0 +1,106 @@
+generated: '2026-08-12'
+method: derived
+status: candidate
+source: >-
+  Derived from the 22 operations in openapi/*.json. Searched first for an
+  official Epsilon or CitrusAd MCP server — none exists.
+description: >-
+  Epsilon operates NO Model Context Protocol server. This is a CANDIDATE tool
+  surface derived from the published OpenAPI operations, showing what an MCP
+  server over Epsilon Retail Media would expose if Epsilon shipped one. It is a
+  design proposal, not a discovery record. No MCPServer pointer is wired into
+  apis.yml, because wiring one would assert that Epsilon serves an endpoint it
+  does not serve. If Epsilon publishes a real server, this file should be
+  replaced by a searched one.
+
+server: null
+searched:
+  - {target: 'developers.citrusad.com docs index (llms.txt, 121 pages)', result: 'no MCP, Model Context Protocol, agent or tool-server page', checked: '2026-08-12'}
+  - {target: 'https://developers.citrusad.com/.well-known/oauth-protected-resource', result: 'not served', checked: '2026-08-12'}
+  - {target: 'GitHub org search (citrusad, epsilon-data)', result: 'no Epsilon/CitrusAd organization or MCP repository', checked: '2026-08-12'}
+  - {target: 'npm registry (citrusad, epsilon retail media)', result: '0 first-party packages, so no stdio MCP server either', checked: '2026-08-12'}
+
+candidate_tools:
+  - name: generate_ads
+    rest: [generate]
+    api: Epsilon Retail Media Integration API
+    description: Request product and banner ads for a catalog, placement and shopper session.
+    consequence: read
+  - name: generate_bannerx_ads
+    rest: [bannerx]
+    api: Epsilon Retail Media Integration API
+    description: Request responsive Banner X ads for a placement.
+    consequence: read
+  - name: report_order
+    rest: [report-an-order]
+    api: Epsilon Retail Media Integration API
+    description: Report a completed order for attribution and billing.
+    consequence: write
+    caution: >-
+      Drives attribution and ad spend. No idempotency mechanism exists on this
+      operation, so an agent retry can double-report.
+  - name: list_orders
+    rest: [retrieve-a-list-of-orders]
+    consequence: read
+  - name: get_order
+    rest: [retrieve-an-order]
+    consequence: read
+  - name: upsert_catalog
+    rest: [create-or-update-a-catalog]
+    consequence: write
+  - name: upsert_catalog_product
+    rest: [create-or-update-a-product]
+    consequence: write
+  - name: list_catalog_products
+    rest: [retrieve-a-list-of-products]
+    consequence: read
+  - name: get_catalog_product
+    rest: [retrieve-a-product]
+    consequence: read
+  - name: upsert_customer
+    rest: [create-or-update-a-customer]
+    consequence: write
+    caution: Writes shopper identity data. Governed by the platform Acceptable Use Policy.
+  - name: list_customers
+    rest: [retrieve-a-list-of-customers]
+    consequence: read
+  - name: get_customer
+    rest: [retrieve-a-customer]
+    consequence: read
+  - name: manage_customer_segments
+    rest: [manage-customers-and-segments]
+    consequence: write
+  - name: create_filter_mapping
+    rest: [createFilterMapping]
+    api: Epsilon Retail Media Filter Mapping API
+    consequence: write
+  - name: list_filter_mappings
+    rest: [listFilterMappings]
+    consequence: read
+  - name: get_filter_mapping
+    rest: [getFilterMapping]
+    consequence: read
+  - name: update_filter_mapping
+    rest: [updateFilterMapping]
+    consequence: write
+  - name: delete_filter_mapping
+    rest: [deleteFilterMapping]
+    consequence: destructive
+  - name: list_cross_sell_categories
+    rest: [listCrossSellCategories]
+    api: Epsilon Retail Media Cross-Sell Category API
+    consequence: read
+  - name: create_cross_sell_category
+    rest: [createCrossSellCategory]
+    consequence: write
+  - name: get_cross_sell_category
+    rest: [getCrossSellCategory]
+    consequence: read
+  - name: delete_cross_sell_category
+    rest: [deleteCrossSellCategory]
+    consequence: destructive
+
+tool_count: 22
+notes:
+  - Every candidate tool inherits its input schema from the backing OpenAPI operation; nothing here is invented beyond the tool naming.
+  - No tool crosswalk artifact is written, because a crosswalk requires a real MCP (or GraphQL) surface to bind against and neither exists.

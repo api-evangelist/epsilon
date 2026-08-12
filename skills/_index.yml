@@ -1,0 +1,40 @@
+generated: '2026-08-12'
+method: generated
+source: >-
+  Packaged from the operationIds present in openapi/*.json plus the flows
+  documented at https://developers.citrusad.com/integration/reference/. Searched
+  first for provider-published Agent Skills or an AGENTS.md — Epsilon publishes
+  neither.
+description: >-
+  Agent Skills for the Epsilon Retail Media APIs, one per marquee flow. Every
+  operationId referenced is verified present in a published OpenAPI in openapi/;
+  none is invented. Each skill carries the cross-cutting rules that are not in the
+  spec — the three auth models, the three error envelopes, the absent idempotency
+  and the blind 429 backoff.
+
+provider_published_skills: false
+searched:
+  - {target: 'https://developers.citrusad.com/integration/llms.txt', result: 'no skills, AGENTS.md or agent-instructions page among 121 indexed pages', checked: '2026-08-12'}
+
+skills:
+  - name: epsilon-onboard-retail-media-catalog
+    file: epsilon-onboard-retail-media-catalog.md
+    api: Epsilon Retail Media Integration API
+    summary: Empty sandbox to a catalog that returns ads — create catalog, sync products, verify, confirm generation.
+    operations: [create-or-update-a-catalog, create-or-update-a-product, retrieve-a-list-of-products, retrieve-a-product, generate]
+  - name: epsilon-serve-and-attribute-ads
+    file: epsilon-serve-and-attribute-ads.md
+    api: Epsilon Retail Media Integration API
+    summary: The revenue loop — request ads, page with memoryToken, fire tracking, report the order, verify attribution.
+    operations: [generate, bannerx, report-an-order, retrieve-a-list-of-orders, retrieve-an-order]
+  - name: epsilon-target-audiences-and-placements
+    file: epsilon-target-audiences-and-placements.md
+    api: Epsilon Retail Media Integration API, Filter Mapping API, Cross-Sell Category API
+    summary: Sync shoppers and segments, map filters, define cross-sell categories — across three APIs with three credential shapes.
+    operations: [create-or-update-a-customer, retrieve-a-list-of-customers, retrieve-a-customer, manage-customers-and-segments, createFilterMapping, listFilterMappings, getFilterMapping, updateFilterMapping, deleteFilterMapping, listCrossSellCategories, createCrossSellCategory, getCrossSellCategory, deleteCrossSellCategory]
+
+shared_cautions:
+  - No idempotency mechanism exists anywhere on this platform. POST /orders drives attribution and billing and has no replay protection.
+  - 429 is declared but carries no Retry-After and no RateLimit-* headers, so backoff must be client-side and blind.
+  - Error envelopes differ by API generation; do not write one parser.
+  - No sandbox is self-service; a Technical Account Manager provisions credentials and hosts.

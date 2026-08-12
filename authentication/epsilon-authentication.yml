@@ -1,0 +1,126 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://developers.citrusad.com/integration/reference/before-you-start,
+  https://developers.citrusad.com/integration/reference/oauth-20-authentication,
+  https://developers.citrusad.com/integration/reference/authentication-1 —
+  enriched over the profile derived from openapi/*.json securitySchemes.
+docs: https://developers.citrusad.com/integration/reference/oauth-20-authentication
+description: >-
+  Epsilon Retail Media uses three overlapping credential models across one
+  platform. The default is an HTTP Basic API key issued per team (retailer) and
+  per environment (sandbox vs production), retrieved from the platform UI under
+  Integration Settings. The /ads endpoints additionally accept OAuth 2.0
+  client-credentials bearer tokens minted at /v1/oauth2/token. The Filter Mapping
+  and Cross-Sell Category APIs declare a JWT bearer token in the Authorization
+  header. There is no self-service credential issuance: the team ID, API key, and
+  OAuth client_id/client_secret are all provisioned by an Epsilon Technical
+  Account Manager.
+
+summary:
+  types: [apiKey, http-basic, oauth2, jwt-bearer]
+  api_key_in: [header]
+  self_service_signup: false
+  provisioning: Technical Account Manager (sandbox and production issued separately)
+
+schemes:
+- name: api-key-basic
+  type: http
+  scheme: basic
+  parameter: Authorization
+  applies_to:
+    - Epsilon Retail Media Integration API (all endpoints)
+    - Epsilon Retail Media Brand Pages API
+  format: 'Authorization: Basic base64(<apiKey>:)'
+  compatibility_form: >-
+    The platform also accepts the raw API key value passed directly in the
+    Authorization header ("Authorization: Basic <existing_api_key>") for
+    compatibility with established client integrations — documented explicitly on
+    the Brand Pages authentication page.
+  environments:
+    - {name: sandbox, note: 'Separate team ID and API key; provisioned by the Technical Account Manager.'}
+    - {name: production, note: 'Separate team ID and API key; values differ from sandbox.'}
+  docs: https://developers.citrusad.com/integration/reference/before-you-start
+  sources:
+    - https://developers.citrusad.com/integration/reference/before-you-start
+    - https://developers.citrusad.com/integration/reference/authentication-1
+
+- name: oauth2-client-credentials
+  type: oauth2
+  flow: clientCredentials
+  token_endpoint: https://$BASE_URL/v1/oauth2/token
+  token_endpoint_auth_method: client_secret_basic
+  request: 'POST with Content-Type application/x-www-form-urlencoded and body grant_type=client_credentials'
+  token_type: Bearer
+  expires_in: 3600
+  scopes: []
+  scopes_note: >-
+    No scopes are defined or accepted. The token request takes only
+    grant_type=client_credentials; there is no scope parameter and no scope
+    reference page. Authorization is entirely a property of the issued client,
+    which is why no scopes/ artifact is written for this provider.
+  applies_to:
+    - Epsilon Retail Media Integration API — /ads endpoints ONLY
+  restriction: >-
+    Documented restriction: "OAuth 2.0 is only available on the /ads endpoint."
+    Order reporting via /orders must use HTTP Basic with the secret API key.
+  errors:
+    - {code: invalid_client, meaning: 'client_id or client_secret is incorrect.'}
+    - {code: invalid_request, meaning: 'Missing/invalid/duplicated parameter, or malformed request.'}
+  docs: https://developers.citrusad.com/integration/reference/oauth-20-authentication
+  sources:
+    - https://developers.citrusad.com/integration/reference/oauth-20-authentication
+
+- name: TokenSecurity
+  type: apiKey
+  in: header
+  parameter: Authorization
+  format: 'Bearer xxx.yyy.zzz (JWT)'
+  description: >-
+    Declared in the published OpenAPI for the Filter Mapping and Cross-Sell
+    Category APIs: "For accessing the API a valid JWT must be passed in all
+    queries in the 'Authorization' header."
+  applies_to:
+    - Epsilon Retail Media Filter Mapping API
+    - Epsilon Retail Media Cross-Sell Category API
+  sources:
+    - openapi/epsilon-retail-media-filter-mapping-openapi.json
+    - openapi/epsilon-retail-media-cross-sell-category-openapi.json
+
+- name: sec0
+  type: apiKey
+  in: header
+  parameter: Authorization
+  x_bearer_format: basic
+  description: >-
+    The security scheme as declared in the published Integration API OpenAPI.
+    It is modelled as apiKey-in-header with x-bearer-format basic, which is the
+    spec-level expression of the HTTP Basic API key above.
+  sources:
+    - openapi/epsilon-retail-media-integration-openapi.json
+
+observed:
+  - url: https://eu-ads.rmn.dotomi.com/ads/v3/brand-pages
+    method: POST
+    sent: no credentials
+    status: 401
+    content_type: application/problem+json
+    body: '{"title":"Unauthorized.","status":401,"detail":"Missing or invalid API credentials.","instance":"/ads/v3/brand-pages"}'
+    checked: '2026-08-12'
+  - url: https://eu-ads.rmn.dotomi.com/v1/ads/generate
+    method: POST
+    sent: no credentials, empty JSON body
+    status: 400
+    content_type: text/plain
+    body: '"catalogId must be set"'
+    note: >-
+      The v1 ad-generation surface validates the body before authentication and
+      answers in text/plain, unlike the v3 brand-pages surface which answers with
+      RFC 9457 problem+json. The two generations of this API do not share an error
+      or auth-failure contract.
+    checked: '2026-08-12'
+
+gaps:
+  - No /.well-known/openid-configuration or /.well-known/oauth-authorization-server is served on any Epsilon host, so the OAuth 2.0 authorization server is not machine-discoverable.
+  - The OAuth 2.0 flow is documented in prose only; it is not declared as an oauth2 securityScheme in any published OpenAPI.
+  - Token endpoint is documented as a template (https://$BASE_URL/v1/oauth2/token); the concrete host is tenant-assigned.

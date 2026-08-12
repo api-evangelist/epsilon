@@ -1,0 +1,471 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CrossSellCategory API",
+    "description": "CrossSellCategory API",
+    "version": "v2",
+    "x-source": "https://developers.citrusad.com/integration/reference/"
+  },
+  "servers": [
+    {
+      "url": "https://catalog.citrusad.com"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "TokenSecurity": {
+        "type": "apiKey",
+        "description": "For accessing the API a valid JWT must be passed in all queries in the 'Authorization' header. The following syntax must be used in the 'Authorization' header. (Bearer xxx.yyy.zzz)",
+        "name": "Authorization",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "protobufAny": {
+        "type": "object",
+        "properties": {
+          "typeUrl": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string",
+            "format": "byte"
+          }
+        }
+      },
+      "rpcStatus": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/protobufAny"
+            }
+          }
+        }
+      },
+      "v2CrossSellCategory": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "catalogId": {
+            "type": "string",
+            "description": "The unique identifier of the retailer's catalog."
+          },
+          "category": {
+            "type": "string",
+            "description": "The category within the catalog."
+          },
+          "crossSellCategory": {
+            "type": "string",
+            "description": "The category to cross sell into."
+          }
+        }
+      },
+      "v2ListCrossSellCategoriesResponse": {
+        "type": "object",
+        "properties": {
+          "crossSellCategories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/v2CrossSellCategory"
+            },
+            "description": "The list of cross sell categories based on provided criteria."
+          },
+          "nextPageToken": {
+            "type": "string",
+            "description": "The page token for requesting the next page of the pagination. Should be used as \"pageToken\" in the request"
+          },
+          "totalCount": {
+            "type": "string",
+            "format": "int64",
+            "description": "The total number of cross sell categories that match provided criteria."
+          }
+        }
+      },
+      "v2CreateCrossSellCategoryRequest": {
+        "type": "object",
+        "properties": {
+          "crossSellCategory": {
+            "$ref": "#/components/schemas/v2CrossSellCategory"
+          }
+        },
+        "required": [
+          "crossSellCategory"
+        ]
+      },
+      "v2CreateCrossSellCategoryResponse": {
+        "type": "object",
+        "properties": {
+          "crossSellCategory": {
+            "$ref": "#/components/schemas/v2CrossSellCategory"
+          }
+        },
+        "required": [
+          "crossSellCategory"
+        ]
+      },
+      "v2GetCrossSellCategoryResponse": {
+        "type": "object",
+        "properties": {
+          "crossSellCategory": {
+            "$ref": "#/components/schemas/v2CrossSellCategory"
+          }
+        },
+        "required": [
+          "crossSellCategory"
+        ]
+      },
+      "v2DeleteCrossSellCategoryResponse": {
+        "type": "object"
+      }
+    }
+  },
+  "security": [
+    {
+      "TokenSecurity": []
+    }
+  ],
+  "paths": {
+    "/v2/cross-sell-categories": {
+      "get": {
+        "summary": "Lists all cross sell categories (based on params provided)",
+        "operationId": "listCrossSellCategories",
+        "responses": {
+          "200": {
+            "description": "A list of cross sell categories and a pagination token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/v2ListCrossSellCategoriesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "There was a problem with input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Login failed or token not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Login failed or token not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pageToken",
+            "description": "Page token used for pagination. Send this value in subsequent requests.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "description": "The number of cross sell categories you are requesting per page.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "int64",
+              "default": "20"
+            }
+          },
+          {
+            "name": "catalogId",
+            "description": "Used to filter by a specific catalog.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "description": "Used to filter by a specific category.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "crossSellCategory"
+        ]
+      },
+      "post": {
+        "summary": "Create cross sell category",
+        "operationId": "createCrossSellCategory",
+        "responses": {
+          "200": {
+            "description": "The created cross sell category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/v2CreateCrossSellCategoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "There was a problem with input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Login failed or token not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Login failed or token not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/v2CreateCrossSellCategoryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": [
+          "crossSellCategory"
+        ]
+      }
+    },
+    "/v2/cross-sell-categories/{id}": {
+      "get": {
+        "summary": "Get cross sell category for specified id",
+        "operationId": "getCrossSellCategory",
+        "responses": {
+          "200": {
+            "description": "The cross sell category object for requested id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/v2GetCrossSellCategoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "There was a problem with input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Login failed or token not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Login failed or token not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The cross sell category for specified id does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "crossSellCategory"
+        ]
+      },
+      "delete": {
+        "summary": "Delete cross sell category",
+        "operationId": "deleteCrossSellCategory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/v2DeleteCrossSellCategoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "There was a problem with input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Login failed or token not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Login failed or token not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The cross sell category for specified id does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rpcStatus"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "crossSellCategory"
+        ]
+      }
+    }
+  }
+}

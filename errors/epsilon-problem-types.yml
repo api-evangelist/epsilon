@@ -1,0 +1,131 @@
+generated: '2026-08-12'
+method: derived
+format: mixed
+source: >-
+  Derived from the 4xx/5xx responses declared across openapi/*.json, enriched
+  from https://developers.citrusad.com/integration/reference/oauth-20-authentication
+  and /validation-troubleshooting, and confirmed by live unauthenticated probes
+  of https://eu-ads.rmn.dotomi.com on 2026-08-12.
+description: >-
+  Epsilon Retail Media does not have one error contract; it has three. The newest
+  surface (Brand Pages, /ads/v3) returns RFC 9457 application/problem+json. The
+  v1 ad and data-sync surface returns a bare quoted string in text/plain with no
+  code, no type and no machine-readable field. The Filter Mapping and Cross-Sell
+  Category APIs return a JSON object with a single message field. A client
+  integrating the whole platform must implement three parsers.
+
+envelopes:
+  - id: rfc9457
+    media_type: application/problem+json
+    applies_to: [Epsilon Retail Media Brand Pages API]
+    shape: '{ "title": string, "status": integer, "detail": string, "instance": string }'
+    example: '{"title":"Unauthorized.","status":401,"detail":"Missing or invalid API credentials.","instance":"/ads/v3/brand-pages"}'
+    evidence:
+      url: https://eu-ads.rmn.dotomi.com/ads/v3/brand-pages
+      method: POST
+      http_status: 401
+      content_type: application/problem+json;charset=iso-8859-1
+      checked: '2026-08-12'
+  - id: plain-text-string
+    media_type: text/plain
+    applies_to: [Epsilon Retail Media Integration API]
+    shape: 'a bare double-quoted string, e.g. "catalogId must be set"'
+    evidence:
+      url: https://eu-ads.rmn.dotomi.com/v1/ads/generate
+      method: POST
+      http_status: 400
+      content_type: text/plain;charset=utf-8
+      body: '"catalogId must be set"'
+      checked: '2026-08-12'
+    spec_evidence: >-
+      openapi/epsilon-retail-media-integration-openapi.json declares every one of
+      the ten 4xx/5xx responses on all 13 operations with content type text/plain
+      and an empty example value — no schema, no description beyond the status
+      number itself.
+  - id: message-object
+    media_type: application/json
+    applies_to: [Epsilon Retail Media Filter Mapping API, Epsilon Retail Media Cross-Sell Category API]
+    shape: '{ "message": string }'
+    spec_evidence: openapi/epsilon-retail-media-filter-mapping-openapi.json, openapi/epsilon-retail-media-cross-sell-category-openapi.json
+  - id: oauth2-error
+    media_type: application/json
+    applies_to: [token endpoint /v1/oauth2/token]
+    shape: '{ "error": string }'
+    standard: RFC 6749 §5.2
+
+problems:
+  - status: 400
+    title: Bad Request
+    envelope: plain-text-string
+    meaning: Request body failed validation — a required field is missing or malformed.
+    observed_examples:
+      - '"catalogId must be set" (POST /v1/ads/generate)'
+      - '"catalog id is empty" (POST /v1/ads/bannerx)'
+    remediation: >-
+      Validate catalogId, placement and maxNumberOfAds before sending. Note the
+      two observed messages for the same missing field differ in wording between
+      /ads/generate and /ads/bannerx, so do not string-match on them.
+    declared_on: all 22 operations
+  - status: 401
+    title: Unauthorized
+    envelope: rfc9457 (v3) / plain-text-string (v1)
+    meaning: Missing or invalid API credentials.
+    remediation: >-
+      Send Authorization: Basic base64(<apiKey>:), or a Bearer token from
+      /v1/oauth2/token for the /ads endpoints. Sandbox and production keys are
+      different values.
+    declared_on: all 22 operations
+  - status: 403
+    title: Forbidden
+    meaning: The credential is valid but not entitled to the team, catalog or resource.
+    remediation: Confirm the teamId matches the environment the key was issued for.
+    declared_on: all 22 operations
+  - status: 404
+    title: Not Found
+    meaning: The addressed order, product, customer, filter mapping or cross-sell category does not exist.
+    declared_on: 16 operations
+  - status: 429
+    title: Too Many Requests
+    envelope: plain-text-string
+    meaning: Request throttled.
+    remediation: >-
+      Back off and retry. No Retry-After, RateLimit-* or X-RateLimit-* header is
+      documented or observed, and the declared 429 response has no body schema,
+      so a client has no signal for how long to wait.
+    declared_on: 13 operations (Integration API only)
+    gap: true
+  - status: 500
+    title: Internal Server Error
+    meaning: Unhandled platform error.
+    remediation: >-
+      Apply the documented graceful-fallback behaviour — render the page without
+      sponsored placements rather than failing the shopper's request.
+    declared_on: all 22 operations
+  - status: 502
+    title: Bad Gateway
+    declared_on: 13 operations (Integration API only)
+  - status: 503
+    title: Service Unavailable
+    declared_on: 13 operations (Integration API only)
+  - status: 504
+    title: Gateway Timeout
+    meaning: Upstream ad-selection timeout.
+    remediation: Fall back to an unsponsored page; do not retry inline in the shopper request path.
+    declared_on: 13 operations (Integration API only)
+
+oauth_errors:
+  - code: invalid_client
+    status: 401
+    meaning: The client_id or client_secret sent to /v1/oauth2/token is incorrect.
+    remediation: Re-check the credentials and that they are base64-encoded as client_id:client_secret in a Basic Authorization header.
+    source: https://developers.citrusad.com/integration/reference/oauth-20-authentication
+  - code: invalid_request
+    status: 400
+    meaning: The token request is missing a required parameter, has an invalid value, repeats a parameter, or is otherwise malformed.
+    remediation: Send only grant_type=client_credentials in the body with Content-Type application/x-www-form-urlencoded.
+    source: https://developers.citrusad.com/integration/reference/oauth-20-authentication
+
+gaps:
+  - No error-code registry. There is no stable machine-readable code on any surface except the two OAuth token errors — clients must branch on HTTP status alone.
+  - No published error reference page. Error semantics are scattered across the auth page, the troubleshooting page and the status numbers in the specs.
+  - The v1 surface's 4xx/5xx responses carry no schema and no description in the OpenAPI, so generated clients get an untyped error path.
