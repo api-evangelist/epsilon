@@ -1,0 +1,132 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Citrus filter-mapping API",
+    "version": "0.0.1-alpha"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "filterMapping",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "get list of filter mappings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://$BASE_URL.citrusad.com/v1/filter-mapping",
+            "params": [
+              {
+                "name": "catalogId",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "filters",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "get list of filter mappings"
+        },
+        {
+          "info": {
+            "name": "create filter mapping",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://$BASE_URL.citrusad.com/v1/filter-mapping",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create filter mapping"
+        },
+        {
+          "info": {
+            "name": "get a filter mapping",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://$BASE_URL.citrusad.com/v1/filter-mapping/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get a filter mapping"
+        },
+        {
+          "info": {
+            "name": "update a filter mapping",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://$BASE_URL.citrusad.com/v1/filter-mapping/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "update a filter mapping"
+        },
+        {
+          "info": {
+            "name": "delete a filter mapping",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://$BASE_URL.citrusad.com/v1/filter-mapping/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "delete a filter mapping"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

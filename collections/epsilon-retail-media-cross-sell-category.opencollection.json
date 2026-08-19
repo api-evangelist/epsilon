@@ -1,0 +1,114 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "CrossSellCategory API",
+    "version": "v2"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "crossSellCategory",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Lists all cross sell categories (based on params provided)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://catalog.citrusad.com/v2/cross-sell-categories",
+            "params": [
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Page token used for pagination. Send this value in subsequent requests."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of cross sell categories you are requesting per page."
+              },
+              {
+                "name": "catalogId",
+                "value": "",
+                "type": "query",
+                "description": "Used to filter by a specific catalog."
+              },
+              {
+                "name": "category",
+                "value": "",
+                "type": "query",
+                "description": "Used to filter by a specific category."
+              }
+            ]
+          },
+          "docs": "Lists all cross sell categories (based on params provided)"
+        },
+        {
+          "info": {
+            "name": "Create cross sell category",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://catalog.citrusad.com/v2/cross-sell-categories",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create cross sell category"
+        },
+        {
+          "info": {
+            "name": "Get cross sell category for specified id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://catalog.citrusad.com/v2/cross-sell-categories/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get cross sell category for specified id"
+        },
+        {
+          "info": {
+            "name": "Delete cross sell category",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://catalog.citrusad.com/v2/cross-sell-categories/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete cross sell category"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

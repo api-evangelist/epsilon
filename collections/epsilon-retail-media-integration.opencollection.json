@@ -1,0 +1,284 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Epsilon Retail Media Integration API",
+    "version": "1"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Generate product and banner ads",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "https://integration-BASE-URL.citrusad.com/v1/ads/generate",
+        "body": {
+          "type": "json",
+          "data": "{}"
+        }
+      },
+      "docs": "Generate product and banner ads"
+    },
+    {
+      "info": {
+        "name": "Generate banner X ads",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "https://integration-BASE-URL.citrusad.com/v1/ads/bannerx",
+        "body": {
+          "type": "json",
+          "data": "{}"
+        }
+      },
+      "docs": "Generate banner X ads"
+    },
+    {
+      "info": {
+        "name": "Retrieve a list of orders",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://integration-BASE-URL.citrusad.com/v1/orders",
+        "params": [
+          {
+            "name": "teamId",
+            "value": "",
+            "type": "query",
+            "description": "If a teamId is not provided, then the teamId will fall back onto the teamId provided by the authentication."
+          },
+          {
+            "name": "limit",
+            "value": "",
+            "type": "query"
+          },
+          {
+            "name": "skip",
+            "value": "",
+            "type": "query"
+          },
+          {
+            "name": "orderIds",
+            "value": "",
+            "type": "query"
+          }
+        ],
+        "body": {
+          "type": "json",
+          "data": "{}"
+        }
+      },
+      "docs": "Retrieve a list of orders"
+    },
+    {
+      "info": {
+        "name": "Report an order",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "https://integration-BASE-URL.citrusad.com/v1/orders",
+        "body": {
+          "type": "json",
+          "data": "{}"
+        }
+      },
+      "docs": "Report an order"
+    },
+    {
+      "info": {
+        "name": "Retrieve an order",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://integration-BASE-URL.citrusad.com/v1/orders/:orderId",
+        "params": [
+          {
+            "name": "orderId",
+            "value": "",
+            "type": "path"
+          }
+        ]
+      },
+      "docs": "Retrieve an order"
+    },
+    {
+      "info": {
+        "name": "Create or update a catalog",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "https://integration-BASE-URL.citrusad.com/v1/catalogs",
+        "body": {
+          "type": "json",
+          "data": "{}"
+        }
+      },
+      "docs": "Create or update a catalog"
+    },
+    {
+      "info": {
+        "name": "Retrieve a list of products",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://integration-BASE-URL.citrusad.com/v1/catalog-products",
+        "params": [
+          {
+            "name": "limit",
+            "value": "",
+            "type": "query",
+            "description": "Maximum 1000"
+          },
+          {
+            "name": "skip",
+            "value": "",
+            "type": "query"
+          },
+          {
+            "name": "catalogId",
+            "value": "",
+            "type": "query"
+          },
+          {
+            "name": "gtins",
+            "value": "",
+            "type": "query"
+          }
+        ]
+      },
+      "docs": "Retrieve a list of products"
+    },
+    {
+      "info": {
+        "name": "Create or update a product",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "https://integration-BASE-URL.citrusad.com/v1/catalog-products",
+        "body": {
+          "type": "json",
+          "data": "{}"
+        }
+      },
+      "docs": "Create or update a product"
+    },
+    {
+      "info": {
+        "name": "Retrieve a product",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://integration-BASE-URL.citrusad.com/v1/catalog-products/:catalogId/:gtin",
+        "params": [
+          {
+            "name": "catalogId",
+            "value": "",
+            "type": "path",
+            "description": "The catalog you are retrieving the product within. Required."
+          },
+          {
+            "name": "gtin",
+            "value": "",
+            "type": "path",
+            "description": "The product code you are requesting. Does not need to be gtin. Required."
+          }
+        ]
+      },
+      "docs": "Retrieve a product"
+    },
+    {
+      "info": {
+        "name": "Retrieve a list of customers",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://integration-BASE-URL.citrusad.com/v1/customers",
+        "params": [
+          {
+            "name": "limit",
+            "value": "",
+            "type": "query"
+          },
+          {
+            "name": "skip",
+            "value": "",
+            "type": "query"
+          },
+          {
+            "name": "customerIds",
+            "value": "",
+            "type": "query"
+          }
+        ]
+      },
+      "docs": "Retrieve a list of customers"
+    },
+    {
+      "info": {
+        "name": "Create or update a customer",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "https://integration-BASE-URL.citrusad.com/v1/customers",
+        "body": {
+          "type": "json",
+          "data": "{}"
+        }
+      },
+      "docs": "Create or update a customer"
+    },
+    {
+      "info": {
+        "name": "Retrieve a customer",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://integration-BASE-URL.citrusad.com/v1/customers/:customerId",
+        "params": [
+          {
+            "name": "customerId",
+            "value": "",
+            "type": "path"
+          }
+        ]
+      },
+      "docs": "Retrieve a customer"
+    },
+    {
+      "info": {
+        "name": "Manage customer-segment linkage",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "https://integration-BASE-URL.citrusad.com/v1/customers/manage-segments",
+        "body": {
+          "type": "json",
+          "data": "{}"
+        }
+      },
+      "docs": "Manage customer-segment linkage"
+    }
+  ],
+  "bundled": true
+}
