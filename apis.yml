@@ -49,6 +49,13 @@ apis:
   - Retail Media
   - Advertising
   - Catalogs
+  - Product
+  - Order
+  - Customers
+  tags_raw:
+  - Retail Media
+  - Advertising
+  - Catalogs
   - Products
   - Orders
   - Customers
