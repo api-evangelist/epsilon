@@ -32,54 +32,16 @@ tags:
 - Retail
 - Publicis Groupe
 apis:
-- aid: epsilon:epsilon-retail-media-integration-api
-  name: Epsilon Retail Media Integration API
-  description: >-
-    The core Epsilon Retail Media (CitrusAd) REST API. Retailers use it to sync
-    product catalogs, catalog products, customers and order data into the
-    platform, and to request product ads, static banner ads and Banner X
-    responsive ads for search, category and cross-sell placements. Requests are
-    JSON over HTTPS authenticated with an HTTP Basic API key; the /ads endpoints
-    additionally support OAuth 2.0 client-credentials bearer tokens. Ad-generation
-    endpoints are served from regional hosts on *.rmn.dotomi.com; the data-sync
-    endpoints are served from a per-tenant integration host on citrusad.com.
-  humanURL: https://developers.citrusad.com/integration/reference/api-overview
-  baseURL: https://integration-{tenant}.citrusad.com/v1
-  tags:
-  - Retail Media
-  - Advertising
-  - Catalogs
-  - Product
-  - Order
-  - Customers
-  tags_raw:
-  - Retail Media
-  - Advertising
-  - Catalogs
-  - Products
-  - Orders
-  - Customers
-  properties:
-  - type: OpenAPI
-    url: openapi/epsilon-retail-media-integration-openapi.json
-  - type: Documentation
-    url: https://developers.citrusad.com/integration/reference/api-overview
-  - type: APIReference
-    url: https://developers.citrusad.com/integration/reference/generate
-  - type: Overlay
-    url: overlays/epsilon-retail-media-integration-overlay.yaml
 - aid: epsilon:epsilon-retail-media-brand-pages-api
   name: Epsilon Retail Media Brand Pages API
   description: >-
-    Serves brand-page content modules for retailer-hosted brand landing pages.
-    A retailer routes /brands/{slug} on its own domain, calls POST
-    /ads/v3/brand-pages on its assigned regional Epsilon RMN ads host with the
-    urlSlug and catalogId, and renders the returned modules, theme and tracking
-    templates with its own UI components. Impression, click and add-to-cart
-    tracking is fired either client-to-server through a retailer reverse proxy or
-    server-to-server directly to the regional tracking host. Uses the same API key
-    as the rest of the Epsilon RMN platform. No OpenAPI is published for this
-    surface; the request and response contracts are documented in prose.
+    Serves brand-page content modules for retailer-hosted brand landing pages. A retailer routes /brands/{slug}
+    on its own domain, calls POST /ads/v3/brand-pages on its assigned regional Epsilon RMN ads host with
+    the urlSlug and catalogId, and renders the returned modules, theme and tracking templates with its
+    own UI components. Impression, click and add-to-cart tracking is fired either client-to-server through
+    a retailer reverse proxy or server-to-server directly to the regional tracking host. Uses the same
+    API key as the rest of the Epsilon RMN platform. No OpenAPI is published for this surface; the request
+    and response contracts are documented in prose.
   humanURL: https://developers.citrusad.com/integration/reference/brand-page-apis
   baseURL: https://eu-ads.rmn.dotomi.com
   tags:
@@ -92,54 +54,144 @@ apis:
     url: https://developers.citrusad.com/integration/reference/overview-1
   - type: APIReference
     url: https://developers.citrusad.com/integration/reference/brand-page-apis
-- aid: epsilon:epsilon-retail-media-filter-mapping-api
-  name: Epsilon Retail Media Filter Mapping API
-  description: >-
-    Manages filter mappings that translate a retailer's own product filter
-    vocabulary into the filters Epsilon Retail Media applies when selecting ads.
-    Five operations — create, list, get, update and delete a filter mapping —
-    authenticated with a JWT bearer token in the Authorization header.
-  humanURL: https://developers.citrusad.com/integration/reference/filtermapping
-  baseURL: https://{tenant}.citrusad.com/v1
+- aid: epsilon:epsilon-ads-api
+  name: Epsilon Ads API
+  description: The Ads API from Epsilon — 2 operation(s) for ads.
+  humanURL: https://developers.citrusad.com/integration/reference/api-overview
+  baseURL: https://integration-{tenant}.citrusad.com/v1
   tags:
-  - Retail Media
-  - Advertising
-  - Filters
-  - Targeting
+  - Ads
   properties:
   - type: OpenAPI
-    url: openapi/epsilon-retail-media-filter-mapping-openapi.json
+    url: openapi/epsilon-ads-api-openapi.yml
+  - type: Documentation
+    url: https://developers.citrusad.com/integration/reference/api-overview
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/generate
   - type: APIReference
     url: https://developers.citrusad.com/integration/reference/filtermapping
-  - type: Overlay
-    url: overlays/epsilon-retail-media-filter-mapping-overlay.yaml
-- aid: epsilon:epsilon-retail-media-cross-sell-category-api
-  name: Epsilon Retail Media Cross-Sell Category API
-  description: >-
-    Manages cross-sell category definitions used by the category cross-sell ad
-    placement, where ads for one category are shown against products in a
-    different, related category. Four operations — list, create, get and delete a
-    cross-sell category — authenticated with a JWT bearer token.
-  humanURL: https://developers.citrusad.com/integration/reference/crosssellcategory
-  baseURL: https://catalog.citrusad.com
-  tags:
-  - Retail Media
-  - Advertising
-  - Categories
-  - Cross-sell
-  properties:
-  - type: OpenAPI
-    url: openapi/epsilon-retail-media-cross-sell-category-openapi.json
   - type: APIReference
     url: https://developers.citrusad.com/integration/reference/crosssellcategory
-  - type: Overlay
-    url: overlays/epsilon-retail-media-cross-sell-category-overlay.yaml
+- aid: epsilon:epsilon-catalog-products-api
+  name: Epsilon Catalog Products API
+  description: The Catalog Products API from Epsilon — 2 operation(s) for catalog products.
+  humanURL: https://developers.citrusad.com/integration/reference/api-overview
+  baseURL: https://integration-{tenant}.citrusad.com/v1
+  tags:
+  - Catalog Products
+  properties:
+  - type: OpenAPI
+    url: openapi/epsilon-catalog-products-api-openapi.yml
+  - type: Documentation
+    url: https://developers.citrusad.com/integration/reference/api-overview
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/generate
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/filtermapping
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/crosssellcategory
+- aid: epsilon:epsilon-catalogs-api
+  name: Epsilon Catalogs API
+  description: The Catalogs API from Epsilon — 1 operation(s) for catalogs.
+  humanURL: https://developers.citrusad.com/integration/reference/api-overview
+  baseURL: https://integration-{tenant}.citrusad.com/v1
+  tags:
+  - Catalogs
+  properties:
+  - type: OpenAPI
+    url: openapi/epsilon-catalogs-api-openapi.yml
+  - type: Documentation
+    url: https://developers.citrusad.com/integration/reference/api-overview
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/generate
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/filtermapping
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/crosssellcategory
+- aid: epsilon:epsilon-crosssellcategory-api
+  name: Epsilon Cross Sell Category API
+  description: The crossSellCategory API from Epsilon — 2 operation(s) for crosssellcategory.
+  humanURL: https://developers.citrusad.com/integration/reference/api-overview
+  baseURL: https://integration-{tenant}.citrusad.com/v1
+  tags:
+  - crossSellCategory
+  properties:
+  - type: OpenAPI
+    url: openapi/epsilon-crosssellcategory-api-openapi.yml
+  - type: Documentation
+    url: https://developers.citrusad.com/integration/reference/api-overview
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/generate
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/filtermapping
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/crosssellcategory
+- aid: epsilon:epsilon-customers-api
+  name: Epsilon Customers API
+  description: The Customers API from Epsilon — 3 operation(s) for customers.
+  humanURL: https://developers.citrusad.com/integration/reference/api-overview
+  baseURL: https://integration-{tenant}.citrusad.com/v1
+  tags:
+  - Customers
+  properties:
+  - type: OpenAPI
+    url: openapi/epsilon-customers-api-openapi.yml
+  - type: Documentation
+    url: https://developers.citrusad.com/integration/reference/api-overview
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/generate
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/filtermapping
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/crosssellcategory
+- aid: epsilon:epsilon-filtermapping-api
+  name: Epsilon Filter Mapping API
+  description: The filterMapping API from Epsilon — 2 operation(s) for filtermapping.
+  humanURL: https://developers.citrusad.com/integration/reference/api-overview
+  baseURL: https://integration-{tenant}.citrusad.com/v1
+  tags:
+  - filterMapping
+  properties:
+  - type: OpenAPI
+    url: openapi/epsilon-filtermapping-api-openapi.yml
+  - type: Documentation
+    url: https://developers.citrusad.com/integration/reference/api-overview
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/generate
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/filtermapping
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/crosssellcategory
+- aid: epsilon:epsilon-orders-api
+  name: Epsilon Orders API
+  description: The Orders API from Epsilon — 2 operation(s) for orders.
+  humanURL: https://developers.citrusad.com/integration/reference/api-overview
+  baseURL: https://integration-{tenant}.citrusad.com/v1
+  tags:
+  - Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/epsilon-orders-api-openapi.yml
+  - type: Documentation
+    url: https://developers.citrusad.com/integration/reference/api-overview
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/generate
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/filtermapping
+  - type: APIReference
+    url: https://developers.citrusad.com/integration/reference/crosssellcategory
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/epsilon-retail-media-integration-overlay.yaml
+- type: Overlay
+  url: overlays/epsilon-retail-media-filter-mapping-overlay.yaml
+- type: Overlay
+  url: overlays/epsilon-retail-media-cross-sell-category-overlay.yaml
 - type: DomainSecurity
   url: security/epsilon-domain-security.yml
 - type: Website
