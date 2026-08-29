@@ -14,6 +14,18 @@ description: >-
   public machine-readable contract. API access is provisioned by a Technical
   Account Manager rather than self-service signup.
 url: https://raw.githubusercontent.com/api-evangelist/epsilon/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://www.epsilon.com/images/logos/epsilon-og-image.png
 x-type: company
 x-source: harvest:marketing-integration-graph
