@@ -198,6 +198,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/epsilon-capability-edges.yml
+  name: Epsilon Business Capability Map
 - type: Overlay
   url: overlays/epsilon-retail-media-integration-overlay.yaml
 - type: Overlay
