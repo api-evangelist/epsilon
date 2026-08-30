@@ -1,0 +1,345 @@
+openapi: 3.2.0
+info:
+  title: Epsilon Retail Media Integration Ads API
+  version: '1'
+  x-source: https://developers.citrusad.com/integration/reference/
+servers:
+- url: https://integration-BASE-URL.citrusad.com/v1/
+security:
+- sec0: []
+tags:
+- name: Ads
+paths:
+  /ads/generate:
+    post:
+      summary: Generate product and banner ads
+      description: ''
+      operationId: generate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - catalogId
+              - placement
+              - maxNumberOfAds
+              properties:
+                catalogId:
+                  type: string
+                  description: The catalogId you are requesting ads for. Typically a single identifier for a retailer.
+                placement:
+                  type: string
+                  description: The placement you are requesting ads for.
+                customerId:
+                  type: string
+                  description: Your unique customerId. Optional.
+                sessionId:
+                  type: string
+                  description: Unique sessionId used for attribution. Required to be consistent between a user's session and order reporting.
+                searchTerm:
+                  type: string
+                  description: Used for search placements. The exact search term entered by the customer on your site.
+                targetedProductGtin:
+                  type: string
+                  description: Used for cross-sell placements. The product code that is being advertised against
+                maxNumberOfAds:
+                  type: integer
+                  description: The maximum number of product ads to receive.
+                  format: int32
+                contentStandardId:
+                  type: string
+                  description: The banner contentStandardId. Required for banners.
+                bannerSlotIds:
+                  type: array
+                  description: The banner slots ads are required. Will be superseded by bannerSlots array object.
+                  items:
+                    type: string
+                productFilters:
+                  type: string
+                  description: An array or arrays are required depending on your ad generation filtering. Used in category placements or any other placement to further define business rules. Not currently compatible with cross-sell or upsell placements.
+                  default: '[     [       "category:Frozen"     ],     ["Location:Brisbane Central"]]'
+                  format: json
+                options:
+                  type: array
+                  items:
+                    properties:
+                      filtermode:
+                        type: string
+                        description: Defines the ad generation filtering mode.
+                        default: AndOr
+                      cached:
+                        type: boolean
+                        description: Defines if the retailer expects to cache the adId
+                        default: false
+                      includeAdvertiserInfo:
+                        type: boolean
+                        description: Defines if the retailer requires advertiser information to comply with the EU's Digital Services Act
+                        default: true
+                    type: object
+                bannerSlots:
+                  type: array
+                  description: The banner slots that are requested. Specifying maxNumberOfAds for the banner allows you to retrieve multiple of the same banner slot.
+                  items:
+                    properties:
+                      slotId:
+                        type: string
+                        description: The bannerSlotId ads are required for.
+                      maxNumberOfAds:
+                        type: integer
+                        description: The maximum number of product ads to receive.
+                        format: int32
+                    type: object
+                audience:
+                  type: array
+                  items:
+                    properties:
+                      segmentIds:
+                        type: array
+                        description: The list of segment IDs that the customer can access.
+                        default: []
+                        items:
+                          type: string
+                      sourceId:
+                        type: string
+                        description: The agreed ID of the source between Epsilon and yourself. Used when multiple sources are used for segments. Not required if only syncing from one source.
+                        default: retailer-cdp-1
+                    type: object
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n    \"ads\": [\n        {\n            \"id\": \"string\",\n            \"gtin\": \"string\",\n            \"discount\": {\n                \"amount\": \"number\",\n                \"minPrice\": \"number\",\n                \"maxPerCustomer\": \"integer\"\n            },\n            \"expiry\": \"string\",\n            \"position\": \"integer\",\n          \t\"metadata\": {\n        \t\t\t\"advertiserInfo\": {\n       \t\t\t\t\t\"advertiser\": \"string\",\n          \t\t\t\"onBehalfOf\": \"string\",\n      \t\t\t},\n     {\n            \"id\": \"string\",\n            \"gtin\": \"string\",\n            \"discount\": {\n                \"amount\": \"number\",\n                \"minPrice\": \"number\",\n                \"maxPerCustomer\": \"integer\"\n            },\n            \"expiry\": \"string\",\n            \"position\": \"integer\"\n          \t\"metadata\": {\n        \t\t\t\"advertiserInfo\": {\n       \t\t\t\t\t\"advertiser\": \"string\",\n          \t\t\t\"onBehalfOf\": \"string\",\n        },\n       {\n            \"id\": \"string\",\n            \"gtin\": \"string\",\n            \"discount\": {\n                \"amount\": \"number\",\n                \"minPrice\": \"number\",\n                \"maxPerCustomer\": \"integer\"\n            },\n            \"expiry\": \"string\",\n            \"position\": \"integer\"\n          \t\"metadata\": {\n        \t\t\t\"advertiserInfo\": {\n       \t\t\t\t\t\"advertiser\": \"string\",\n          \t\t\t\"onBehalfOf\": \"string\",         \n        }\n    ],\n    \"banners\": [\n        {\n            \"id\": \"string\",\n            \"contentStandardId\": \"string\",\n            \"slotId\": \"string\",\n            \"imageUrl\": \"string\",\n            \"linkUrl\": \"string\",\n            \"altText\": \"string\",\n            \"text\": \"\",\n            \"gtins\": [\n                \"string\",\n                \"string\"\n            ],\n            \"expiry\": \"2022-03-10T05:53:14.653320236Z\",\n            \"tags\": {}\n        }\n    ],\n      \"products\": [],  \n  \"metadata\": []\n\n}"
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: ''
+        '401':
+          description: '401'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+        '403':
+          description: '403'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+        '404':
+          description: '404'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+        '429':
+          description: '429'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+        '500':
+          description: '500'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+        '502':
+          description: '502'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+        '503':
+          description: '503'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+        '504':
+          description: '504'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+      deprecated: false
+      tags:
+      - Ads
+  /ads/bannerx:
+    post:
+      summary: Generate banner X ads
+      description: ''
+      operationId: bannerx
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - catalogId
+              - placement
+              properties:
+                catalogId:
+                  type: string
+                  description: The catalogId you are requesting ads for. Typically a single identifier for a retailer.
+                placement:
+                  type: string
+                  description: The placement you are requesting ads for.
+                customerId:
+                  type: string
+                  description: Your unique customerId. Optional.
+                sessionId:
+                  type: string
+                  description: Unique sessionId used for attribution. Required to be consistent between a user's session and order reporting.
+                searchTerm:
+                  type: string
+                  description: Used for search placements. The exact search term entered by the customer on your site.
+                contentStandardId:
+                  type: string
+                  description: The banner contentStandardId. Required for banners.
+                bannerSlotIds:
+                  type: array
+                  description: The banner slots ads are required for.
+                  items:
+                    properties:
+                      slotId:
+                        type: string
+                        description: The bannerSlotId ads are required for.
+                      maxNumberOfAds:
+                        type: integer
+                        description: The maximum number of product ads to receive.
+                        format: int32
+                    type: object
+                productFilters:
+                  type: string
+                  description: An array or arrays are required depending on your ad generation filtering. Used in category placements or any other placement to further define business rules. Not currently compatible with cross-sell or upsell placements.
+                  default: '[     [       "category:Frozen"     ],     ["Location:Brisbane Central"]]'
+                  format: json
+                options:
+                  type: array
+                  items:
+                    properties:
+                      filtermode:
+                        type: string
+                        description: Defines the ad generation filtering mode.
+                        default: AndOr
+                      cached:
+                        type: boolean
+                        description: Defines if the retailer expects to cache the adId
+                        default: false
+                      includeAdvertiserInfo:
+                        type: boolean
+                        description: Defines if the retailer requires advertiser information to comply with the EU's Digital Services Act
+                        default: true
+                    type: object
+                audience:
+                  type: array
+                  items:
+                    properties:
+                      segmentIds:
+                        type: array
+                        description: The list of segment IDs that the customer can access.
+                        default: []
+                        items:
+                          type: string
+                      sourceId:
+                        type: string
+                        description: The agreed ID of the source between Epsilon and yourself. Used when multiple sources are used for segments. Not required if only syncing from one source.
+                        default: retailer-cdp-1
+                    type: object
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n    \"ads\": [\n        {\n            \"contentStandardId\": \"string\",\n            \"slotId\": \"string\",\n            \"banners\": [\n                {\n                    \"citrusAdId\": \"string\",\n                    \"citrusCampaignName\": \"string\",\n                    \"citrusContentStandardId\": \"string\",\n                    \"citrusSlotId\": \"string\",\n                    \"citrusExpiry\": \"string\",\n                    \"headingText\": \"string\",\n                    \"bannerText\": \"string\",\n                    \"bannerTextColour\": \"string\",\n                    \"ctaFlag\": boolean,\n                    \"ctaText\": \"string\",\n                    \"ctaTextAccessibility\": \"string\",\n                    \"ctaLink\": \"string\",\n                    \"backgroundColour\": \"string\",\n                    \"backgroundImage\": \"string\",\n                    \"backgroundImagePosition\": \"string\",\n                    \"heroImage\": \"string\",\n                    \"heroImageAltText\": \"string\",\n                    \"secondaryHeroImage\": \"string\",\n                    \"secondaryHeroImageAltText\": \"string\",\n                    \"tags\": {},\n                    \"gtins\": [\n                        \"string\",\n                        \"string\"\n                    ],\n                    \"position\": integer,\n                  \t\"metadata\": {\n        \t\t\t\t\t\t\t\"advertiserInfo\": {\n          \t\t\t\t\t\t\t\"advertiser\": \"string\",\n          \t\t\t\t\t\t\t\"onBehalfOf\": \"string\"\n                      }\n                }\n            ]\n        }\n    ],  \n  \"metadata\": []\n}"
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: ''
+        '401':
+          description: '401'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+        '403':
+          description: '403'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+        '404':
+          description: '404'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+        '429':
+          description: '429'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+        '500':
+          description: '500'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+        '502':
+          description: '502'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+        '503':
+          description: '503'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+        '504':
+          description: '504'
+          content:
+            text/plain:
+              examples:
+                Result:
+                  value: ''
+      deprecated: false
+      tags:
+      - Ads
+components:
+  securitySchemes:
+    sec0:
+      type: apiKey
+      name: Authorization
+      in: header
+      x-bearer-format: basic
+      x-default: YOUR_API_KEY
