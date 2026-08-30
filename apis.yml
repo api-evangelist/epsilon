@@ -125,7 +125,8 @@ apis:
   description: The crossSellCategory API from Epsilon — 2 operation(s) for crosssellcategory.
   humanURL: https://developers.citrusad.com/integration/reference/api-overview
   baseURL: https://integration-{tenant}.citrusad.com/v1
-  tags:
+  tags: []
+  tags_raw:
   - crossSellCategory
   properties:
   - type: OpenAPI
@@ -161,7 +162,8 @@ apis:
   description: The filterMapping API from Epsilon — 2 operation(s) for filtermapping.
   humanURL: https://developers.citrusad.com/integration/reference/api-overview
   baseURL: https://integration-{tenant}.citrusad.com/v1
-  tags:
+  tags: []
+  tags_raw:
   - filterMapping
   properties:
   - type: OpenAPI
@@ -180,6 +182,8 @@ apis:
   humanURL: https://developers.citrusad.com/integration/reference/api-overview
   baseURL: https://integration-{tenant}.citrusad.com/v1
   tags:
+  - Order
+  tags_raw:
   - Orders
   properties:
   - type: OpenAPI
