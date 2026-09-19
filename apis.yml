@@ -123,6 +123,8 @@ apis:
   humanURL: https://developers.citrusad.com/integration/reference/api-overview
   baseURL: https://integration-{tenant}.citrusad.com/v1
   tags:
+  - Catalog
+  tags_raw:
   - Catalogs
   properties:
   - type: OpenAPI
