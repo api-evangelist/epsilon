@@ -169,12 +169,6 @@ paths:
       - filterMapping
 components:
   responses:
-    UnAuthorized:
-      description: Login failed or token not valid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Response'
     NotFound:
       description: Resource Not found.
       content:
@@ -187,6 +181,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Response'
+    UnAuthorized:
+      description: Login failed or token not valid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
     InvalidRequest:
       description: There was a problem with input.
       content:
@@ -194,7 +194,7 @@ components:
           schema:
             $ref: '#/components/schemas/Response'
   schemas:
-    UpdateFilterMappingRequest:
+    CreateFilterMappingRequest:
       type: object
       properties:
         filter:
@@ -216,7 +216,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FilterMapping'
-    CreateFilterMappingRequest:
+    Response:
+      type: object
+      properties:
+        errorMessages:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+        isSuccessful:
+          type: boolean
+    UpdateFilterMappingRequest:
       type: object
       properties:
         filter:
@@ -245,20 +259,6 @@ components:
       - catalogId
       - filter
       - displayName
-    Response:
-      type: object
-      properties:
-        errorMessages:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
-        isSuccessful:
-          type: boolean
   securitySchemes:
     TokenSecurity:
       in: header

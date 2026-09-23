@@ -237,8 +237,21 @@ components:
           $ref: '#/components/schemas/v2CrossSellCategory'
       required:
       - crossSellCategory
-    v2DeleteCrossSellCategoryResponse:
+    v2ListCrossSellCategoriesResponse:
       type: object
+      properties:
+        crossSellCategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/v2CrossSellCategory'
+          description: The list of cross sell categories based on provided criteria.
+        nextPageToken:
+          type: string
+          description: The page token for requesting the next page of the pagination. Should be used as "pageToken" in the request
+        totalCount:
+          type: string
+          format: int64
+          description: The total number of cross sell categories that match provided criteria.
     v2CrossSellCategory:
       type: object
       properties:
@@ -266,21 +279,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/protobufAny'
-    v2ListCrossSellCategoriesResponse:
+    v2DeleteCrossSellCategoryResponse:
       type: object
-      properties:
-        crossSellCategories:
-          type: array
-          items:
-            $ref: '#/components/schemas/v2CrossSellCategory'
-          description: The list of cross sell categories based on provided criteria.
-        nextPageToken:
-          type: string
-          description: The page token for requesting the next page of the pagination. Should be used as "pageToken" in the request
-        totalCount:
-          type: string
-          format: int64
-          description: The total number of cross sell categories that match provided criteria.
     protobufAny:
       type: object
       properties:

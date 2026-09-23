@@ -1,0 +1,56 @@
+{
+  "provider": "epsilon",
+  "sources": [
+    "_original/epsilon-retail-media-cross-sell-category-openapi.json",
+    "_original/epsilon-retail-media-filter-mapping-openapi.json",
+    "_original/epsilon-retail-media-integration-openapi.json"
+  ],
+  "outputs": [
+    "epsilon-crosssellcategory-api-openapi.yml",
+    "epsilon-filtermapping-api-openapi.yml",
+    "epsilon-ads-api-openapi.yml",
+    "epsilon-catalog-products-api-openapi.yml",
+    "epsilon-catalogs-api-openapi.yml",
+    "epsilon-customers-api-openapi.yml",
+    "epsilon-orders-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (3 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "epsilon-retail-media-cross-sell-category-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "epsilon-retail-media-cross-sell-category-openapi.json: declared missing tag: crossSellCategory",
+    "epsilon-retail-media-filter-mapping-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "epsilon-retail-media-filter-mapping-openapi.json: declared missing tag: filterMapping",
+    "epsilon-retail-media-integration-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "epsilon-retail-media-integration-openapi.json: tagged paths POST /ads/generate -> Ads",
+    "epsilon-retail-media-integration-openapi.json: tagged paths POST /ads/bannerx -> Ads",
+    "epsilon-retail-media-integration-openapi.json: tagged paths POST /orders -> Orders",
+    "epsilon-retail-media-integration-openapi.json: tagged paths GET /orders -> Orders",
+    "epsilon-retail-media-integration-openapi.json: tagged paths GET /orders/{orderId} -> Orders",
+    "epsilon-retail-media-integration-openapi.json: tagged paths POST /catalogs -> Catalogs",
+    "epsilon-retail-media-integration-openapi.json: tagged paths POST /catalog-products -> Catalog Products",
+    "epsilon-retail-media-integration-openapi.json: tagged paths GET /catalog-products -> Catalog Products",
+    "epsilon-retail-media-integration-openapi.json: tagged paths GET /catalog-products/{catalogId}/{gtin} -> Catalog Products",
+    "epsilon-retail-media-integration-openapi.json: tagged paths POST /customers -> Customers",
+    "epsilon-retail-media-integration-openapi.json: tagged paths GET /customers -> Customers",
+    "epsilon-retail-media-integration-openapi.json: tagged paths GET /customers/{customerId} -> Customers",
+    "epsilon-retail-media-integration-openapi.json: tagged paths POST /customers/manage-segments -> Customers",
+    "epsilon-retail-media-integration-openapi.json: declared missing tag: Ads",
+    "epsilon-retail-media-integration-openapi.json: declared missing tag: Catalog Products",
+    "epsilon-retail-media-integration-openapi.json: declared missing tag: Catalogs",
+    "epsilon-retail-media-integration-openapi.json: declared missing tag: Customers",
+    "epsilon-retail-media-integration-openapi.json: declared missing tag: Orders",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "epsilon-ads-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "epsilon-catalog-products-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "epsilon-catalogs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "epsilon-crosssellcategory-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "epsilon-customers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "epsilon-filtermapping-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "epsilon-orders-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}
