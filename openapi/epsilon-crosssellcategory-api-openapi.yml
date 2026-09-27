@@ -216,13 +216,6 @@ paths:
       - crossSellCategory
 components:
   schemas:
-    v2GetCrossSellCategoryResponse:
-      type: object
-      properties:
-        crossSellCategory:
-          $ref: '#/components/schemas/v2CrossSellCategory'
-      required:
-      - crossSellCategory
     v2CreateCrossSellCategoryResponse:
       type: object
       properties:
@@ -230,6 +223,18 @@ components:
           $ref: '#/components/schemas/v2CrossSellCategory'
       required:
       - crossSellCategory
+    rpcStatus:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/protobufAny'
     v2CreateCrossSellCategoryRequest:
       type: object
       properties:
@@ -252,6 +257,16 @@ components:
           type: string
           format: int64
           description: The total number of cross sell categories that match provided criteria.
+    v2DeleteCrossSellCategoryResponse:
+      type: object
+    protobufAny:
+      type: object
+      properties:
+        typeUrl:
+          type: string
+        value:
+          type: string
+          format: byte
     v2CrossSellCategory:
       type: object
       properties:
@@ -267,28 +282,13 @@ components:
         crossSellCategory:
           type: string
           description: The category to cross sell into.
-    rpcStatus:
+    v2GetCrossSellCategoryResponse:
       type: object
       properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/protobufAny'
-    v2DeleteCrossSellCategoryResponse:
-      type: object
-    protobufAny:
-      type: object
-      properties:
-        typeUrl:
-          type: string
-        value:
-          type: string
-          format: byte
+        crossSellCategory:
+          $ref: '#/components/schemas/v2CrossSellCategory'
+      required:
+      - crossSellCategory
   securitySchemes:
     TokenSecurity:
       type: apiKey

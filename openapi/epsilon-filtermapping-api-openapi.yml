@@ -169,20 +169,8 @@ paths:
       - filterMapping
 components:
   responses:
-    NotFound:
-      description: Resource Not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Response'
     ErrorResponse:
       description: There was a server problem.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Response'
-    UnAuthorized:
-      description: Login failed or token not valid.
       content:
         application/json:
           schema:
@@ -193,8 +181,50 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Response'
+    UnAuthorized:
+      description: Login failed or token not valid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+    NotFound:
+      description: Resource Not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
   schemas:
-    CreateFilterMappingRequest:
+    Response:
+      type: object
+      properties:
+        errorMessages:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+        isSuccessful:
+          type: boolean
+    FilterMapping:
+      type: object
+      properties:
+        filter:
+          type: string
+        catalogId:
+          type: string
+        displayName:
+          type: string
+        id:
+          type: string
+      required:
+      - id
+      - catalogId
+      - filter
+      - displayName
+    UpdateFilterMappingRequest:
       type: object
       properties:
         filter:
@@ -216,21 +246,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FilterMapping'
-    Response:
-      type: object
-      properties:
-        errorMessages:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
-        isSuccessful:
-          type: boolean
-    UpdateFilterMappingRequest:
+    CreateFilterMappingRequest:
       type: object
       properties:
         filter:
@@ -240,22 +256,6 @@ components:
         displayName:
           type: string
       required:
-      - catalogId
-      - filter
-      - displayName
-    FilterMapping:
-      type: object
-      properties:
-        filter:
-          type: string
-        catalogId:
-          type: string
-        displayName:
-          type: string
-        id:
-          type: string
-      required:
-      - id
       - catalogId
       - filter
       - displayName
