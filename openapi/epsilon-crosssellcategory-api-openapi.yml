@@ -216,20 +216,6 @@ paths:
       - crossSellCategory
 components:
   schemas:
-    v2DeleteCrossSellCategoryResponse:
-      type: object
-    rpcStatus:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/protobufAny'
     v2CreateCrossSellCategoryRequest:
       type: object
       properties:
@@ -237,13 +223,16 @@ components:
           $ref: '#/components/schemas/v2CrossSellCategory'
       required:
       - crossSellCategory
-    v2CreateCrossSellCategoryResponse:
+    protobufAny:
       type: object
       properties:
-        crossSellCategory:
-          $ref: '#/components/schemas/v2CrossSellCategory'
-      required:
-      - crossSellCategory
+        typeUrl:
+          type: string
+        value:
+          type: string
+          format: byte
+    v2DeleteCrossSellCategoryResponse:
+      type: object
     v2ListCrossSellCategoriesResponse:
       type: object
       properties:
@@ -259,15 +248,26 @@ components:
           type: string
           format: int64
           description: The total number of cross sell categories that match provided criteria.
-    protobufAny:
+    v2GetCrossSellCategoryResponse:
       type: object
       properties:
-        typeUrl:
+        crossSellCategory:
+          $ref: '#/components/schemas/v2CrossSellCategory'
+      required:
+      - crossSellCategory
+    rpcStatus:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
           type: string
-        value:
-          type: string
-          format: byte
-    v2GetCrossSellCategoryResponse:
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/protobufAny'
+    v2CreateCrossSellCategoryResponse:
       type: object
       properties:
         crossSellCategory:

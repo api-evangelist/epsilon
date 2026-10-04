@@ -168,6 +168,31 @@ paths:
       tags:
       - filterMapping
 components:
+  responses:
+    InvalidRequest:
+      description: There was a problem with input.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+    NotFound:
+      description: Resource Not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+    UnAuthorized:
+      description: Login failed or token not valid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+    ErrorResponse:
+      description: There was a server problem.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
   schemas:
     UpdateFilterMappingRequest:
       type: object
@@ -182,6 +207,28 @@ components:
       - catalogId
       - filter
       - displayName
+    CreateFilterMappingRequest:
+      type: object
+      properties:
+        filter:
+          type: string
+        catalogId:
+          type: string
+        displayName:
+          type: string
+      required:
+      - catalogId
+      - filter
+      - displayName
+    ListFilterMappingsResponse:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+        filterMappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/FilterMapping'
     Response:
       type: object
       properties:
@@ -196,28 +243,6 @@ components:
                 type: string
         isSuccessful:
           type: boolean
-    ListFilterMappingsResponse:
-      type: object
-      properties:
-        nextPageToken:
-          type: string
-        filterMappings:
-          type: array
-          items:
-            $ref: '#/components/schemas/FilterMapping'
-    CreateFilterMappingRequest:
-      type: object
-      properties:
-        filter:
-          type: string
-        catalogId:
-          type: string
-        displayName:
-          type: string
-      required:
-      - catalogId
-      - filter
-      - displayName
     FilterMapping:
       type: object
       properties:
@@ -234,31 +259,6 @@ components:
       - catalogId
       - filter
       - displayName
-  responses:
-    NotFound:
-      description: Resource Not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Response'
-    UnAuthorized:
-      description: Login failed or token not valid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Response'
-    InvalidRequest:
-      description: There was a problem with input.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Response'
-    ErrorResponse:
-      description: There was a server problem.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Response'
   securitySchemes:
     TokenSecurity:
       in: header
