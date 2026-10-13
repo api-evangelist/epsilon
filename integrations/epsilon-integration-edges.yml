@@ -1,16 +1,36 @@
 generated: '2026-10-12'
-method: none
+method: searched
 source:
 - https://zapier.com/apps/epsilon/integrations
 - https://n8n.io/integrations/epsilon/
 - https://composio.dev/toolkits/epsilon
 - https://monid.ai/tools/epsilon
 checked:
+- https://aws.amazon.com/marketplace/
 - https://composio.dev/toolkits/epsilon
 - https://monid.ai/tools/epsilon
 - https://n8n.io/integrations/epsilon/
 - https://zapier.com/apps/epsilon/integrations
 summary: null
 marketplace_apps: []
-edges: []
+edges:
+- partner_name: AWS Marketplace
+  partner: amazon-web-services
+  partner_match: aggregator
+  type: marketplace
+  marketplace: aws-marketplace
+  channel: distribution
+  relationship: platform-app
+  direction: provider-built
+  evidence: https://aws.amazon.com/marketplace/seller-profile?id=49f46ee6-f168-4531-b7e9-4bfb64c7dee3
+  listing_count: 6
+  apps:
+  - Epsilon PeopleCloud Loyalty on AWS
+  - Epsilon PeopleCloud Cleanroom on AWS
+  - Epsilon CDP on AWS
+  - Epsilon Accelerate
+  - Epsilon Real-Time Interaction on AWS
+  seller_name: Epsilon
+  detected_by: sweep-cloud-marketplaces.py
+  detected: '2026-10-13'
 templates: []
