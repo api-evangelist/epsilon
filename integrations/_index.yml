@@ -15,3 +15,67 @@
   relationship: distribution-channel
   status: not-a-workflow
   arazzo: null
+- slug: epsilon-iab-europe-tcf-global-vendor-list
+  label: IAB Europe TCF Global Vendor List
+  partner_name: IAB Europe TCF Global Vendor List
+  type: contract
+  channel: standard-directory
+  evidence: https://vendor-list.consensu.org/v3/vendor-list.json
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: IAB Europe TCF Global Vendor List
+    spec_file: null
+    role: tcf-vendor
+    registered_name: Epsilon International UK Ltd
+    register_id: '24'
+    products:
+    - Epsilon International UK Ltd
+    matched_domain: epsilon.com
+    api_families:
+    - feature-1
+    - feature-2
+    - feature-3
+    - purpose-1
+    - purpose-10
+    - purpose-11
+    - purpose-2
+    - purpose-3
+    - purpose-4
+    - purpose-5
+    - purpose-6
+    - purpose-7
+    - purpose-8
+    - purpose-9
+    - special-purpose-1
+    - special-purpose-2
+    - special-purpose-3
+    api_families_basis: TCF purposes, special purposes, features and special features declared on the registration
+    detected_by: sweep-adtech.py
+    detected: '2026-10-14'
+  status: not-a-workflow
+  arazzo: null
+- slug: epsilon-mparticle
+  label: mParticle
+  partner: mparticle
+  partner_name: mParticle
+  type: coverage
+  marketplace: coverage
+  channel: partner-built
+  evidence: https://docs.mparticle.com/integrations/epsilon/event/
+  source: edge
+  relationship: connector-coverage
+  status: not-a-workflow
+  arazzo: null
+- slug: epsilon-hightouch
+  label: Hightouch
+  partner: hightouch
+  partner_name: Hightouch
+  type: coverage
+  marketplace: coverage
+  channel: partner-built
+  evidence: https://hightouch.com/docs/destinations/citrusad
+  source: edge
+  relationship: connector-coverage
+  status: not-a-workflow
+  arazzo: null
