@@ -216,38 +216,6 @@ paths:
       - crossSellCategory
 components:
   schemas:
-    v2CreateCrossSellCategoryRequest:
-      type: object
-      properties:
-        crossSellCategory:
-          $ref: '#/components/schemas/v2CrossSellCategory'
-      required:
-      - crossSellCategory
-    protobufAny:
-      type: object
-      properties:
-        typeUrl:
-          type: string
-        value:
-          type: string
-          format: byte
-    v2DeleteCrossSellCategoryResponse:
-      type: object
-    v2ListCrossSellCategoriesResponse:
-      type: object
-      properties:
-        crossSellCategories:
-          type: array
-          items:
-            $ref: '#/components/schemas/v2CrossSellCategory'
-          description: The list of cross sell categories based on provided criteria.
-        nextPageToken:
-          type: string
-          description: The page token for requesting the next page of the pagination. Should be used as "pageToken" in the request
-        totalCount:
-          type: string
-          format: int64
-          description: The total number of cross sell categories that match provided criteria.
     v2GetCrossSellCategoryResponse:
       type: object
       properties:
@@ -267,7 +235,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/protobufAny'
-    v2CreateCrossSellCategoryResponse:
+    protobufAny:
+      type: object
+      properties:
+        typeUrl:
+          type: string
+        value:
+          type: string
+          format: byte
+    v2CreateCrossSellCategoryRequest:
       type: object
       properties:
         crossSellCategory:
@@ -289,6 +265,30 @@ components:
         crossSellCategory:
           type: string
           description: The category to cross sell into.
+    v2CreateCrossSellCategoryResponse:
+      type: object
+      properties:
+        crossSellCategory:
+          $ref: '#/components/schemas/v2CrossSellCategory'
+      required:
+      - crossSellCategory
+    v2ListCrossSellCategoriesResponse:
+      type: object
+      properties:
+        crossSellCategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/v2CrossSellCategory'
+          description: The list of cross sell categories based on provided criteria.
+        nextPageToken:
+          type: string
+          description: The page token for requesting the next page of the pagination. Should be used as "pageToken" in the request
+        totalCount:
+          type: string
+          format: int64
+          description: The total number of cross sell categories that match provided criteria.
+    v2DeleteCrossSellCategoryResponse:
+      type: object
   securitySchemes:
     TokenSecurity:
       type: apiKey
